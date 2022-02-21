@@ -1,0 +1,199 @@
+/* GLOBAL */
+
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display");
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display|Source+Sans+Pro");
+
+
+
+/*
+body {
+  background: #eee;
+  padding: 40px 0px;
+}
+* /
+
+/* CSS CARD COMPTE TWITTER */
+/* CSS CARD : https://www.gekkode.com/developpement/realiser-une-carte-en-css-card-ui-css/  */
+
+.card {
+  width: 300px;
+  margin: 0px auto;
+  background-color: white;
+  box-shadow: 0px 5px 20px #555;
+  margin-bottom: 20px;
+}
+.card a:hover{
+  text-decoration:none;
+}
+.card a {
+  color: #333;
+  text-decoration: none;
+}
+.card:hover .card-image img {
+  width: 110%;
+  filter: grayscale(0);
+}
+
+.card-image {
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+.card-image img {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: grayscale(1);
+  transition-property: filter width;
+  transition-duration: 0.3s;
+}
+
+.card-body {
+  text-align: center;
+  padding: 15px 20px;
+  box-sizing: border-box;
+}
+
+.card-date {
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+.card-title, .card-exceprt {
+  font-family: "Playfair Display", serif;
+}
+
+.card-date, .card-title {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.card-date, .card-excerpt {
+  color: #777;
+}
+
+/* CONTAINER A (2 colonnes) STRUCTURE PAGE   */
+
+.containerA{
+    display:flex;
+}
+.col1A{
+ width:50%;
+}
+.col2A{
+  width:50%;
+}
+.containerA{
+  columns:2;
+  }
+
+/* CONTAINER B (3 colonnes) STRUCTURE PAGE */
+.containerB{
+    display:flex;
+}
+.col1B{
+ width:33%;
+}
+.col2B{
+  width:33%;
+}
+.col3B{
+  width:33%;
+}
+.containerB{
+  columns:3;
+  }
+
+
+/* CSS ENCADRE TWEET */
+
+.avator {
+  border-radius:100px;
+  width:48px;
+  margin-right: 15px;
+}
+
+.tweet-wrap {
+  max-width:490px;
+  background: #fff;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius:3px;
+  padding: 30px;
+  border-bottom: 1px solid #e6ecf0;
+  border-top: 1px solid #e6ecf0;
+  margin-bottom:50px;
+}
+
+.tweet-header {
+  display: flex;
+  align-items:flex-start;
+  font-size:14px;
+}
+.tweet-header-info {
+  font-weight:bold;
+}
+.tweet-header-info span {
+  color:#657786;
+  font-weight:normal;
+  margin-left: 5px;
+}
+.tweet-header-info p {
+  font-weight:normal;
+  margin-top: 5px;
+  
+}
+.tweet-img-wrap {
+  padding-left: 60px;
+}
+
+.tweet-info-counts {
+  display: flex;
+  margin-left: 60px;
+  margin-top: 10px;
+}
+.tweet-info-counts div {
+  display: flex;
+  margin-right: 20px;
+}
+.tweet-info-counts div svg {
+  color:#657786;
+  margin-right: 10px;
+}
+
+@media screen and (max-width:430px){
+
+  body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .tweet-header {
+    flex-direction:column;
+  }
+  .tweet-header img {
+    margin-bottom: 20px;
+  }
+  .tweet-header-info p {
+    margin-bottom: 30px;
+  }
+  .tweet-img-wrap {
+    padding-left: 0;
+  }
+  .tweet-info-counts {
+  display: flex;
+  margin-left: 0;
+}
+.tweet-info-counts div {
+  margin-right: 10px;
+}
+}
+
+.tableau {
+width: 90%;
+margin:auto;
+border : 2px solid black;
+padding:5px;
+}

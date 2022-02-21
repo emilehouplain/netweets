@@ -1,0 +1,42 @@
+{% extends 'game/base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+<!-- Test import CSS card uniquement hors template sb admin 2 : TEST VALIDE-->
+<link rel="stylesheet" href="{% static 'game/styles.css' %}" />
+</head>
+
+<p>MAJ : </p>
+<p>20/02/2022 : <ul>
+    <li>Tests fonction scrap/update</li>
+    <li>Mise en place des pages FAQ / Glossaire </li>
+    <li>Module analyse widget Projects - barre ratio + widget Best Tweet - embedded Tweet </li>
+</ul>
+<p>17/02/2022 : <ul>
+    <li>Footer intégré aux templates base et base_db HTML</li>
+    <li>Mise en place du widget export csv sur le module analyse2 (dashboard)</li>
+</ul>
+<p>16/02/2022 : <ul>
+    <li>Division base.html dashboard / hors dashboard</li>
+    <li>Developpement du template index db : widget area-pie / area-chart / "Illustrations"</li>
+</ul>
+<p>10/02/2022 : <ul>
+    <li>Refonte lien différentes pages (url/id)</li>
+    <li>Dashboard lié à un seul compteTwtter</li>
+    <li>Switch Design</li>
+    <li>Template DB : dashboard analyse index / tables</li>
+</ul>
+</p>
+<p> 31/01/2022 : Initialisation switch design SB ADMIN 2</p>
+<p> 29/01/2022 : SCRAP - fonction update(username)</p>
+<p> 20/01/2022 : ANALYSE - tests fonction scrap() + GAME - recup datas onClick ajax</p>
+<p> 17/01/2022 : GENERAL - changement barre de navigation (sections) + ANALYSE ajout colonnes tableau analyse Tweets</p>
+<p> 12/01/2022 : GAME - Refonte fonction scrap(username) + page Analyse (tableau jQuery)</p>
+<p> 07/01/2022 : ANALYSE - Initialisation module Analyse</p>
+<p> 04/01/2022 : GAME - Refonte BDD objet Jeu </p>
+<p> 23/12/2021 : GAME - Randomisation du placement des cartes
+GAME - Récupération / affichage du résultat </p>
+
+
+{% endblock %}

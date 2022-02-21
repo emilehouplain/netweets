@@ -1,0 +1,163 @@
+
+
+{% extends 'game/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+<!-- Test import CSS card uniquement hors template sb admin 2 -->
+<link rel="stylesheet" href="{% static 'game/styles.css' %}" />
+</head>
+
+<p style="text-align:center;"><strong>Le jeu : à qui appartient ce tweet ?</strong></p>
+
+<!-- Carte Tweet -->
+<div class="tweet-wrap">
+  <div class="tweet-header">
+    <img src="https://pbs.twimg.com/profile_images/1012717264108318722/9lP-d2yM_400x400.jpg" alt="" class="avator">
+    <div class="tweet-header-info">
+      Anonyme <span>@Anonyme</span><span>. {{jeux.tweet.created_at}}
+</span>
+      <p>{{jeux.tweet.text}}</p>
+      
+    </div>
+    
+  </div>
+
+  <div class="tweet-info-counts">
+    
+    <div class="comments">
+      
+      <svg class="feather feather-message-circle sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <div class="comment-count">{{ jeux.tweet.nb_reply }}</div>
+    </div>
+    
+    <div class="retweets">
+      <svg class="feather feather-repeat sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+      <div class="retweet-count">{{ jeux.tweet.nb_rt }}</div>
+    </div>
+    
+    <div class="likes">
+      <svg class="feather feather-heart sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      <div class="likes-count">
+        {{ jeux.tweet.nb_like }}
+      </div>
+    </div>
+    
+    <div class="message">
+      <svg class="feather feather-send sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Carte Compte Twitter 1 -->
+<section class="containerA">
+    <section class="col1A">
+
+<div class="card answer" id={{jeux.id}},{{jeux.compteTwitter1.id}}>
+
+  <div class="card-image">
+    <img src="{{ jeux.compteTwitter1.profile_image_url }}" alt="Photo de profil" />
+  </div>
+  
+  <div class="card-body">
+    
+    <div class="card-date">
+      <time>{{ jeux.compteTwitter1.created_at }}</time>
+    </div>
+  
+    <div class="card-title">
+      <h3 id="aaa">{{ jeux.compteTwitter1.username }}</h3>
+    </div>
+    
+    <div class="card-excerpt">
+      <p> {{ jeux.compteTwitter1.description }}</p>
+    </div>
+    
+  </div>
+</div>
+
+</section>
+	
+
+<!-- Carte Compte Twitter 2 -->
+<section class="col2A">
+
+
+<div class="card answer" id={{jeux.id}},{{jeux.compteTwitter2.id}}>
+  <div class="card-image">
+    <img src="{{ jeux.compteTwitter2.profile_image_url }}" alt="Photo de profil" />
+  </div>
+  
+  <div class="card-body">
+    
+    <div class="card-date">
+      <time>{{ jeux.compteTwitter2.created_at }}</time>
+    </div>
+  
+    <div class="card-title">
+      <h3>{{ jeux.compteTwitter2.username }}</h3>
+    </div>
+    
+    <div class="card-excerpt">
+      <p> {{ jeux.compteTwitter2.description }}</p>
+    </div>
+    
+  </div>
+
+</div>
+	</section>
+</section>
+
+<h1> |{{ resultat }}| </h1>
+
+<script>
+$(function () {
+    $('.answer').on('click', function () {
+        var IDgame = $(this).attr('id');
+		var compteTwitter = $(this).attr('id');
+        $.ajax({
+            url: "{% url 'gameClick' %}", //route answer game qui va appelé uniquement la fonciton qui va comparer l'objet ID jeu avec la réponse et renvoyer win ou loose avec un message associé
+            data: {
+                IDgame: IDgame,
+                // compteTwitter_click: // var à stocker -> ajouter l'id du compteTwitter cliqué
+            },
+            dataType : 'json'
+        });
+    });
+});
+</script>
+
+
+
+
+
+
+<strong><p id="res" style="text-align:center;"></p></strong>
+
+
+<!--
+<script>
+   document.onclick= function(event) {
+      // l'evenement permet de détecter sur quel composant le clic est passé
+      if (event===undefined) event= window.event;
+      var target= 'target' in event? event.target : event.srcElement;
+	  if (target.closest("section > div").id == "win"){
+		document.getElementById("res").innerHTML = "Gagné"
+		}
+		
+
+	  
+	  
+   };
+</script>
+-->
+
+{% endblock %}

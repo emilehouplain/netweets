@@ -1,0 +1,42 @@
+
+
+{% extends 'game/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+<!-- Test import CSS card uniquement hors template sb admin 2 : TEST VALIDE-->
+<link rel="stylesheet" href="{% static 'game/styles.css' %}" />
+</head>
+
+
+<p>Un compte Twitter aléatoire issu de la BDD : </p>
+
+<div class="card">
+  <a target="_blank" href="{{ compte_twitter.profile_url }}">
+  <div class="card-image">
+    <img src="{{ compte_twitter.profile_image_url }}" alt="Photo de profil" />
+  </div>
+  
+  <div class="card-body">
+    
+    <div class="card-date">
+      <time>{{ compte_twitter.created_at }}</time>
+    </div>
+  
+    <div class="card-title">
+      <h3>{{ compte_twitter.username }}</h3>
+    </div>
+    
+    <div class="card-excerpt">
+      <p> {{ compte_twitter.description }}</p>
+    </div>
+    
+  </div>
+  </a>
+</div>
+
+
+
+
+
+{% endblock %}
