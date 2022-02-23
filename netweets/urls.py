@@ -31,8 +31,8 @@ urlpatterns = [
     path('export/csv/<int:compteTwitter_id>', views.export_csv, name='export_csv'),
     path('geolocalisation/<int:compteTwitter_id>', views.geolocalisation, name="geolocalisation"), 
     path('reports/<int:compteTwitter_id>', views.reports, name="reports"),
-    path('faq/', views.faq, name="faq"),
-    path('glossaire/', views.glossaire, name="glossaire"),
+    path('faq/<int:compteTwitter_id>', views.faq, name="faq"),
+    path('glossaire/<int:compteTwitter_id>', views.glossaire, name="glossaire"),
 
 
 
