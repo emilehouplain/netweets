@@ -90,6 +90,7 @@ def formulaire(request):
 def glossaire(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    listeTweets=[]
     return render(request, 'game/glossaire.html', locals())
 
 ### --- FAQ (DashBoard - FAQ) --- ###
@@ -114,6 +115,9 @@ def reports(request, compteTwitter_id):
 def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour appelé le DB avec les datas correspondantes
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    listeTweets=[]
+    for t in Dict['compteTwitter'].tweet_set.all() :
+        listeTweets.append(t)
     return render(request, 'game/tables.html', locals())
 
 ### --- Analyse2 (DashBoard - Index) --- ###
