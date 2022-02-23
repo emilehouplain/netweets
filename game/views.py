@@ -87,12 +87,16 @@ def formulaire(request):
 ### --- TEMPLATES DASHBOARD --- ###
 
 ### --- Glossaire (DashBoard - Glossaire) --- ###
-def glossaire(request):
-    return render(request, 'game/glossaire.html')
+def glossaire(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    return render(request, 'game/glossaire.html', locals())
 
 ### --- FAQ (DashBoard - FAQ) --- ###
-def faq(request):
-    return render(request, 'game/faq.html')
+def faq(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    return render(request, 'game/faq.html', locals())
 
 ### --- Geolocalisation (DashBoard - Geolocalisation) --- ###
 def geolocalisation(request, compteTwitter_id):
