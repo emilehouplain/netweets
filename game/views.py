@@ -1,7 +1,5 @@
 #--------- VIEWS NETWEETS GAME -----------------#
 
-#Test GitHubAA
-
 #IMPORTS
 import json
 from tkinter.ttk import Separator
@@ -115,9 +113,6 @@ def reports(request, compteTwitter_id):
 def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour appelé le DB avec les datas correspondantes
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
-    listeTweets=[]
-    for t in Dict['compteTwitter'].tweet_set.all() :
-        listeTweets.append(t)
     return render(request, 'game/tables.html', locals())
 
 ### --- Analyse2 (DashBoard - Index) --- ###
@@ -207,6 +202,7 @@ def analyse2(request, compteTwitter_id):
     for elem in labels :
         elemClean=str(elem[0])+'/'+str(elem[1])
         labelsClean.append(elemClean)
+    labelsClean = json.dumps(labelsClean)
 
     #WIDGET PROJECTS (barres horizontales)
     nbTweetsRt=0
@@ -233,7 +229,6 @@ def analyse2(request, compteTwitter_id):
 
 #WIDGET EXPORT XL
 def export_csv(request, compteTwitter_id):
-    pdb.set_trace()
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 

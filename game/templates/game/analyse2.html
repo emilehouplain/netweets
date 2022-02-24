@@ -343,7 +343,7 @@
 </body>
 <!-- Script JS nécessaire pour dessiner la courbe du widget Chart Area-->
 <script>
-    var labels= "{{labels|escapejs}}";
+    var labelsClean=JSON.parse("{{labelsClean|escapejs}}");
 </script>
 <script>
     var  nbTweetsPerMonth= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
