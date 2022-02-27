@@ -120,6 +120,20 @@ def analyse2(request, compteTwitter_id):
 
     Dict={}
     Dict['compteTwitter']=compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    #WIDGET Encarts top
+
+    #Object Nombre Moyen Retweets par Tweet
+    nbRetweetsTotal=0
+    nbTweetsTotal=0
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        nbRetweetsTotal=nbRetweetsTotal+tweet.nb_rt
+        nbTweetsTotal=nbTweetsTotal+1
+    nbRetweetsMoyenParTweet=nbRetweetsTotal/nbTweetsTotal
+    nbRetweetsMoyenParTweet=round(nbRetweetsMoyenParTweet,2)
+
+
+    
     
     #WIDGET CHART PIE (chart-pie-demo.js)
     ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
@@ -205,6 +219,7 @@ def analyse2(request, compteTwitter_id):
     labelsClean = json.dumps(labelsClean)
 
     #WIDGET PROJECTS (barres horizontales)
+    #Object Retweets Ratio
     nbTweetsRt=0
     nbTweetsWithoutRt=0
     for tweet in Dict['compteTwitter'].tweet_set.all() :
@@ -215,6 +230,22 @@ def analyse2(request, compteTwitter_id):
     
     ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
     ratioTweetsRtPourcentage = round(ratioTweetsRt*100)
+
+    #Object Retweets Ratio
+    nbTweetsRt=0
+    nbTweetsWithoutRt=0
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        if "RT" in tweet.text : 
+            nbTweetsRt=nbTweetsRt+1
+        else :
+            nbTweetsWithoutRt=nbTweetsWithoutRt+1
+    
+    ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
+    ratioTweetsRtPourcentage = round(ratioTweetsRt*100)
+
+
+    
+
 
     #WIDGET BEST TWEET (barres horizontales)
     popularTweet_nb_like=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0]
