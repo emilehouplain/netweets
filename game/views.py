@@ -115,6 +115,18 @@ def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour ap
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/tables.html', locals())
 
+#Objet ratioLikesPerTweetPerMonth
+def ratiolikesPerTweetPerMonth(request, compteTwitter_id) :
+    ratioLikesPerTweetPerMonth = []
+    for date in labels : 
+        nbLikesPerMonth = 0
+        for tweet in Dict['compteTwitter'].tweet_set.all():
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                nbLikesPerMonth=nbLikesPerMonth+tweet.nb_likes
+        ratioLikesPerTweet = round(nbLikesPerMonth/Dict['datas'][date[0],date[1]], 2)
+        ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
+        pdb.set_trace()
+
 ### --- Analyse2 (DashBoard - Index) --- ###
 def analyse2(request, compteTwitter_id):
 
@@ -143,9 +155,9 @@ def analyse2(request, compteTwitter_id):
     data=json.dumps(data)
 
     #WIDGET CHART AREA (chart-area-demo.js)
-    labels=[]
-
+    #Sous widget - Nombre Tweets / Mois -
     #Objet Label
+    labels=[]
     firstTweet=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
     lastTweet=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
     monthFirstTweet=firstTweet.created_at.month
@@ -194,12 +206,28 @@ def analyse2(request, compteTwitter_id):
             if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
                 Dict['datas'][date[0],date[1]]= Dict['datas'][date[0],date[1]]+1
             else:
-                pass 
+                pass
 
     #Construction de nbTweetsPerMonth
     nbTweetsPerMonth=[]
     for key in Dict['datas'].keys() :
         nbTweetsPerMonth.append(Dict['datas'][key])
+    
+    #Objet ratioLikesPerTweetPerMonth
+    ratioLikesPerTweetPerMonth = []
+    for date in labels : 
+        nbLikesPerMonth = 0
+        for tweet in Dict['compteTwitter'].tweet_set.all():
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                nbLikesPerMonth=nbLikesPerMonth+tweet.nb_like
+        if Dict['datas'][date[0],date[1]] != 0 : #Condition pour éviter la division par 0
+            ratioLikesPerTweet = round(nbLikesPerMonth/Dict['datas'][date[0],date[1]], 2)
+        else : 
+            ratioLikesPerTweet = 0
+        ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
+
+                
+
 
     #Verif recup totalité des tweets
     compteur=0

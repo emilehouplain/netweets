@@ -124,9 +124,9 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-header">Analyse:</div>
+                                            <a id="nbTweetsPerMonth" class="dropdown-item">Nombre de Tweets</a>
+                                            <a id="ratioLikesPerTweetPerMonth" class="dropdown-item">Likes moyens par Tweet</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Something else here</a>
                                         </div>
@@ -348,14 +348,36 @@
 
 
 </body>
+
+
+
+<!-- SCRIPTS JS-->
 <!-- Script JS nécessaire pour dessiner la courbe du widget Chart Area-->
 <script>
     var labelsClean=JSON.parse("{{labelsClean|escapejs}}");
 </script>
 <script>
-    var  nbTweetsPerMonth= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
+    var  datasChartArea= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
+    drawChart();
 </script>
-<script> drawChart() </script>
+
+<!-- Reset Chart Area-->
+<script>
+var resetCanvas = function(){
+    $('#myAreaChart').remove(); // this is my <canvas> element
+    $('.chart-area').append('<canvas id="myAreaChart"><canvas>');
+  };
+</script>
+
+<script>
+document.getElementById('ratioLikesPerTweetPerMonth')
+        .addEventListener('click', function (event) {
+            resetCanvas()
+            datasChartArea= JSON.parse("{{ratioLikesPerTweetPerMonth|escapejs}}");
+            drawChart();
+        });
+</script>
+
 
 <!-- Script JS nécessaire pour dessiner le widget Chart Pie-->
 <script>

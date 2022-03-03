@@ -31,6 +31,9 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 // Area Chart Example
 function drawChart() {
 var ctx = document.getElementById("myAreaChart");
+if(myLineChart!=null){
+  myLineChart.destroy();
+}
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -48,7 +51,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: nbTweetsPerMonth,
+      data: datasChartArea,
     }],
   },
   options: {
