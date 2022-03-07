@@ -16,7 +16,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard - {{ Dict.compteTwitter.username }}</h1>
                         <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                                class="fas fa-download fa-sm text-white-50"></i>Exporter les données</a>
                     </div>
 
                     <!-- Content Row -->
@@ -304,10 +304,10 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Meilleur Tweet !</h6>
                             </div>
                             <div class="card-body">
-
-                                <p><blockquote class="twitter-tweet">
+                                <div style="text-align: center;">
+                                <blockquote class="twitter-tweet">
                                     <a href="https://twitter.com/x/status/{{popularTweet_nb_like.id_tweet}}"></a> 
-                                    </blockquote></p>
+                                    </blockquote></div>
                             
                                 
                             </div>

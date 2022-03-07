@@ -35,6 +35,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 
+import unicodedata
+
 ### --- USER ACCOUNT --- ###
 def login_html(request):
 	try : 
@@ -299,7 +301,7 @@ def export_csv(request, compteTwitter_id):
 
     tweetsToExport = Dict['compteTwitter'].tweet_set.all()
     for tweet in tweetsToExport:
-        row=[Dict['compteTwitter'].username, tweet.text,tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
+        row=[Dict['compteTwitter'].username, tweet.text.encode('ascii','ignore'),tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
         writer.writerow(row)
 
 #WIDGET PROJECTS (barres horizontales)

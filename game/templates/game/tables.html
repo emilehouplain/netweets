@@ -8,49 +8,55 @@
                 <!-- TEST -->
 
                 <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Tweets - {{ Dict.compteTwitter.username }}</h1>
+                    <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                </div>
+                    
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <p class="mb-4">Vous pouvez visualiser/exporter l'intégralité des Tweets de <strong>{{ Dict.compteTwitter.username }}</strong> sur ce module </p>
 
-                    <!-- DataTales Example -->
+                    <!-- DataTales -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Liste des Tweets de {{ Dict.compteTwitter.username }}</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Date de création</th>
-                                            <th>Texte</th>
-                                            <th>Nombre de like</th>
-                                            <th>Nombre de retweet</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Date de création</th>
-                                            <th>Texte</th>
-                                            <th>Nombre de like</th>
-                                            <th>Nombre de retweet</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        {% for t in Dict.compteTwitter.tweet_set.all %}
-                                        <tr>
-                                            <td>{{ t.created_at }}</td>
-                                            <td>{{ t.text }}</td>
-                                            <td>{{ t.nb_like }}</td>
-                                            <td>{{ t.nb_rt }}</td>
 
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+
+
+
+
+
+                    <!-- DATA tables en brut -->
+
+                    <table id="myTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Date de création</th>
+                                <th>Texte</th>
+                                <th>Nombre de like</th>
+                                <th>Nombre de retweet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in Dict.compteTwitter.tweet_set.all %}
+                            <tr>
+                                <td>{{ t.created_at }}</td>
+                                <td>{{ t.text }}</td>
+                                <td>{{ t.nb_like }}</td>
+                                <td>{{ t.nb_rt }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+
                             </div>
                         </div>
                     </div>
@@ -61,49 +67,17 @@
             </div>
             <!-- End of Main Content -->
 
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
-
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
 </body>
+
+
+<!-- Scripts / Libs nécessaires pour DataTables -->
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+    </script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<!-- END Scripts / Libs nécessaires pour DataTables -->
 
 {% endblock %}
