@@ -2,6 +2,7 @@
 
 #IMPORTS
 import json
+from tkinter import E
 from tkinter.ttk import Separator
 from django.http import JsonResponse
 
@@ -36,6 +37,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 
 import unicodedata
+
 
 ### --- USER ACCOUNT --- ###
 def login_html(request):
@@ -105,6 +107,19 @@ def geolocalisation(request, compteTwitter_id):
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/geolocalisation.html', locals())
 
+### --- Nuage de points (DashBoard - Nuage de points) --- ###
+def nuage(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    textGlobal=[]
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        textGlobal.append(tweet)
+    # wordcloud = WordCloud(background_color = 'white', max_words = 50).generate(textGlobal) #manque la librairie
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    plt.show()
+    return render(request, 'game/nuage.html', locals())
+
 ### --- Reports (DashBoard - Reports) --- ###
 def reports(request, compteTwitter_id): 
     Dict={}
@@ -127,7 +142,6 @@ def ratiolikesPerTweetPerMonth(request, compteTwitter_id) :
                 nbLikesPerMonth=nbLikesPerMonth+tweet.nb_likes
         ratioLikesPerTweet = round(nbLikesPerMonth/Dict['datas'][date[0],date[1]], 2)
         ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
-        pdb.set_trace()
 
 ### --- Analyse2 (DashBoard - Index) --- ###
 def analyse2(request, compteTwitter_id):
@@ -151,8 +165,8 @@ def analyse2(request, compteTwitter_id):
     
     #WIDGET CHART PIE (chart-pie-demo.js)
     ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
-    ratioFollowersPourcentage = round(ratioFollowers*100)
-    ratioFriendsPourcentage = 100-ratioFollowersPourcentage
+    ratioFollowersPourcentage = round((ratioFollowers*100), 2)
+    ratioFriendsPourcentage = round(100-ratioFollowersPourcentage, 2)
     data=[ratioFollowersPourcentage, ratioFriendsPourcentage] #A remplacer par les valeurs calculées voulues (ex : repartition RT/Tweets)
     data=json.dumps(data)
 
@@ -248,7 +262,7 @@ def analyse2(request, compteTwitter_id):
         labelsClean.append(elemClean)
     labelsClean = json.dumps(labelsClean)
 
-    #WIDGET PROJECTS (barres horizontales)
+    #WIDGET PROJECTS (=Statstiques -> barres horizontales)
     #Object Retweets Ratio
     nbTweetsRt=0
     nbTweetsWithoutRt=0
@@ -259,7 +273,7 @@ def analyse2(request, compteTwitter_id):
             nbTweetsWithoutRt=nbTweetsWithoutRt+1
     
     ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
-    ratioTweetsRtPourcentage = round(ratioTweetsRt*100)
+    ratioTweetsRtPourcentage = round(ratioTweetsRt*100, 2)
 
     #Object Retweets Ratio
     nbTweetsRt=0
@@ -271,14 +285,54 @@ def analyse2(request, compteTwitter_id):
             nbTweetsWithoutRt=nbTweetsWithoutRt+1
     
     ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
-    ratioTweetsRtPourcentage = round(ratioTweetsRt*100)
+    ratioTweetsRtPourcentage = round(ratioTweetsRt*100, 2)
 
+    #Object Tweets avec Hashtag
+    nbTweetsHashtag=0
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        if "#" in tweet.text :
+            nbTweetsHashtag=nbTweetsHashtag+1
+    ratioNbTweetsHashtag = nbTweetsHashtag / len(Dict['compteTwitter'].tweet_set.all())
+    ratioNbTweetsHashtagPourcentage = round (ratioNbTweetsHashtag*100, 2)
 
     
+    #Object RatioDaysWithTweet
+    print('Debut Ratio Days With Tweets')
+    RatioDaysWithTweet = 0
+    nbDays = 0
+    nbDaysWithTweet = 0
+    i = -1
+    dateCreationCompte = Dict['compteTwitter'].created_at.replace(tzinfo=None) #Formatage necessaire pour permettre la soustraction de datetime.time 
+    nbDays = datetime.now() - dateCreationCompte
+    nbDays = nbDays.days
+
+    for tweet in Dict['compteTwitter'].tweet_set.order_by('-created_at') : #combien de day différent avec un tweet ?
+        try : #Permet de prendre en compte le premier Tweet
+            if tweet.created_at.day != Dict['compteTwitter'].tweet_set.all()[i].created_at.day or tweet.created_at.month != Dict['compteTwitter'].tweet_set.all()[i].created_at.month or tweet.created_at.year !=  Dict['compteTwitter'].tweet_set.all()[i].created_at.year :
+                nbDaysWithTweet = nbDaysWithTweet +1  
+            else : 
+                pass
+            
+            i=i+1
+        except : 
+            nbDaysWithTweet = nbDaysWithTweet +1 #Cas du premier tweet
+            i=i+1
+            continue
+    ratioDaysWithTweet = round((nbDaysWithTweet/nbDays)*100, 2)
+    print('Fin Ratio Days With Tweets')
+
+            
+
 
 
     #WIDGET BEST TWEET (barres horizontales)
-    popularTweet_nb_like=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0]
+    bestTweet_id=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
+    popularTweet_nb_like=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
+    popularTweet_nb_rt=Dict['compteTwitter'].tweet_set.order_by('-nb_rt')[0].id_tweet
+    popularTweet_nb_quote=Dict['compteTwitter'].tweet_set.order_by('-nb_quote')[0].id_tweet
+    popularTweet_nb_reply=Dict['compteTwitter'].tweet_set.order_by('-nb_reply')[0].id_tweet
+
+
 
 
     

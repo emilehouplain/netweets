@@ -16,7 +16,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard - {{ Dict.compteTwitter.username }}</h1>
                         <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i>Exporter les données</a>
+                                class="fas fa-download fa-sm text-white-50"></i> Exporter les données</a>
                     </div>
 
                     <!-- Content Row -->
@@ -33,7 +33,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Dict.compteTwitter.nb_tweets }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            <i class="fas fa-comment fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Dict.compteTwitter.nb_followers }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fas fa-user-circle fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -71,16 +71,11 @@
                                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ nbRetweetsMoyenParTweet }}</div>
                                                 </div>
                                                 <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            <i class="fas fa-heart fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +93,7 @@
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Dict.compteTwitter.nb_friends }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +119,7 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Analyse:</div>
+                                            <div class="dropdown-header">Mesure :</div>
                                             <a id="nbTweetsPerMonth" class="dropdown-item">Nombre de Tweets</a>
                                             <a id="ratioLikesPerTweetPerMonth" class="dropdown-item">Likes moyens par Tweet</a>
                                             <div class="dropdown-divider"></div>
@@ -155,7 +150,7 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                             aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <div class="dropdown-header">Mesure : </div>
                                             <a class="dropdown-item" href="#">Action</a>
                                             <a class="dropdown-item" href="#">Another action</a>
                                             <div class="dropdown-divider"></div>
@@ -190,7 +185,7 @@
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Statistiques</h6>
                                 </div>
                                 <div class="card-body">
                                     <h4 class="small font-weight-bold">Pourcentage de Retweet <span
@@ -199,23 +194,23 @@
                                         <div class="progress-bar bg-danger" role="progressbar" style="width:{{ ratioTweetsRtPourcentage }}%"
                                             aria-valuenow="{{ ratioTweetsRtPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Pourcentage de Friends<span
+                                    <h4 class="small font-weight-bold">Pourcentage de Friends sur total Friends + Followers<span
                                             class="float-right">{{ ratioFriendsPourcentage }}%</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar bg-warning" role="progressbar" style="width: {{ ratioFriendsPourcentage }}%"
                                             aria-valuenow="{{ ratioFriendsPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
+                                    <h4 class="small font-weight-bold">Pourcentage de Tweets avec Hashtag<span
+                                            class="float-right">{{ ratioNbTweetsHashtagPourcentage }}%</span></h4>
                                     <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar" role="progressbar" style="width: {{ ratioNbTweetsHashtagPourcentage }}%"
+                                            aria-valuenow="{{ ratioNbTweetsHashtagPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
+                                    <h4 class="small font-weight-bold">Pourcentage de jours avec au moins un Tweet<span
+                                            class="float-right">{{ ratioDaysWithTweet }}%</span></h4>
                                     <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ ratioDaysWithTweet }}%"
+                                            aria-valuenow="{{ ratioDaysWithTweet }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <h4 class="small font-weight-bold">Account Setup <span
                                             class="float-right">Complete!</span></h4>
@@ -300,18 +295,37 @@
 
                         <!-- Widget Best Tweet -->
                         <div class="card shadow mb-4">
-                            <div class="card-header py-3">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Meilleur Tweet !</h6>
+                                <div class="dropdown no-arrow">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                        aria-labelledby="dropdownMenuLink">
+                                        <div class="dropdown-header">Meilleur Tweet :</div>
+                                        <a id="popularTweet_nb_like_html" class="dropdown-item">Nombre de Likes</a>
+                                        <a id="popularTweet_nb_rt_html" class="dropdown-item">Nombre de Retweets</a>
+                                        <a id="popularTweet_nb_reply" class="dropdown-item">Nombre de réponses</a>
+                                        <a id="popularTweet_nb_quote" class="dropdown-item">Nombre de commentaires</a>
+
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="card-body">
+                               
                                 <div style="text-align: center;">
-                                <blockquote class="twitter-tweet">
-                                    <a href="https://twitter.com/x/status/{{popularTweet_nb_like.id_tweet}}"></a> 
+                                <blockquote id="54321" class="twitter-tweet">
+                                    <a id="12345" href="https://twitter.com/x/status/{{bestTweet_id}}"></a> 
+
                                     </blockquote></div>
                             
                                 
-                            </div>
+                         
                         </div>
+                    </div>
                         <!-- End Widget Best Tweet -->
                             
 
@@ -368,7 +382,7 @@ var resetCanvas = function(){
     $('.chart-area').append('<canvas id="myAreaChart"><canvas>');
   };
 </script>
-
+<!-- Click Likes Par Tweets-->
 <script>
 document.getElementById('ratioLikesPerTweetPerMonth')
         .addEventListener('click', function (event) {
@@ -377,6 +391,15 @@ document.getElementById('ratioLikesPerTweetPerMonth')
             drawChart();
         });
 </script>
+<!-- Click NbTweetsPerMonth-->
+<script>
+    document.getElementById('nbTweetsPerMonth')
+            .addEventListener('click', function (event) {
+                resetCanvas()
+                datasChartArea= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
+                drawChart();
+            });
+    </script>
 
 
 <!-- Script JS nécessaire pour dessiner le widget Chart Pie-->
@@ -385,14 +408,7 @@ document.getElementById('ratioLikesPerTweetPerMonth')
 </script>
 
 <!-- Script JS nécessaire pour l'embedded twitter-->
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
-
-
-
-
-
-
-
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
 
