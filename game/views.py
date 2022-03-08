@@ -53,9 +53,39 @@ def login_html(request):
 def register(request):
     return render(request, 'game/register.html')
 
-### --- TEST TABLES WITH COMPTE TWITTER DEJA DEFINI DEPUIS UNE AUTRE PAGE--- ###
+### --- TEST NEW FORMULAIRE--- ###
 
-#test formulaire# 
+def formulaire2(request):
+    
+    Dict={}
+    
+    form = FormulaireForm(request.POST or None)
+    
+    if form.is_valid():
+        # Ici nous pouvons traiter les données du formulaire
+        username = form.cleaned_data['name']
+        # Nous pourrions ici envoyer l'e-mail grâce aux données
+        # que nous venons de récupérer
+        envoi = True
+        print(username)
+        try :
+            datas=analyse(username)
+            Dict['message']=datas[0]
+            Dict['compteTwitter']=datas[1]
+            Dict['popularTweet_nb_like']=datas[2]
+            Dict['popularTweet_nb_rt']=datas[3]
+            Dict['liste_tweets']=[]
+            a=tweet.objects.filter(compteTwitter_id=datas[1].id)
+            Dict['liste_tweets']=a
+        except:
+            pass
+
+    
+    # Quoiqu'il arrive, on affiche la page du formulaire.
+    return render(request, 'game/formulaire2.html', locals())
+
+
+#formulaire# 
 def formulaire(request):
     
     Dict={}

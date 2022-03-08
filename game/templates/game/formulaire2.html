@@ -1,0 +1,83 @@
+{% extends 'game/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<body class="bg-gradient-primary">
+
+    <div class="container">
+
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+
+            <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">Login Netweets</h1>
+                                    </div>
+									
+
+									
+									
+									
+									
+									
+									
+                                    <div style="text-align: center">
+                                        <p>ATTENTION : cela peut prendre du temps en fonction de la <strong>taille du compte, des restrictions de l'API Twitter, de l'optimisation des requêts (parce que actuellement, c'est quand même bien dégeu on va pas se mentir...)</strong> </p>
+                                        <p>ATTENTION : pour le moment, seul les 3250 tweets les plus récents seront récupérés !</p>
+                                        
+                                        <p>Entrer le nom d'un compte Twitter afin de lancer son analyse..</p>
+
+                                        <form action="{% url "formulaire2" %}" method="post">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <hr>
+                                            <input class="btn btn-primary btn-user btn-block" type="submit" value="Générer le DashBoard"/>
+                                        </form>
+                                    
+                                    {% if envoi %}
+                                    <p>{{ Dict.message }}</p>
+                                    <hr>
+                                    <p>Lien du DashBoard : </p>
+                                    
+
+
+                                        
+                                        <a href="{% url 'analyse2' Dict.compteTwitter.id_compteTwitter %}" class="btn btn-google btn-user btn-block">
+                                            DashBoard
+                                        </a>
+                                        {% endif %}
+                                        <hr>
+                                    </form>
+									
+									
+                                    
+                                    <div class="text-center">
+                                        <a class="small" href="">Besoin d'aide ?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endblock %}
+</body>
+
+
+
+

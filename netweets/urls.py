@@ -33,7 +33,9 @@ urlpatterns = [
     path('reports/<int:compteTwitter_id>', views.reports, name="reports"),
     path('faq/<int:compteTwitter_id>', views.faq, name="faq"),
     path('glossaire/<int:compteTwitter_id>', views.glossaire, name="glossaire"),
-	path('nuage/<int:compteTwitter_id>', views.nuage, name="nuage")
+	path('nuage/<int:compteTwitter_id>', views.nuage, name="nuage"),
+	path('formulaire2', views.formulaire2, name="formulaire2")
+
 
 
 
