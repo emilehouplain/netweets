@@ -337,9 +337,10 @@ def analyse2(request, compteTwitter_id):
     nbDays = nbDays.days
 
     for tweet in Dict['compteTwitter'].tweet_set.order_by('-created_at') : #combien de day différent avec un tweet ?
+        print('debut try', tweet.text)
         try : #Permet de prendre en compte le premier Tweet
-            if tweet.created_at.day != Dict['compteTwitter'].tweet_set.all()[i].created_at.day or tweet.created_at.month != Dict['compteTwitter'].tweet_set.all()[i].created_at.month or tweet.created_at.year !=  Dict['compteTwitter'].tweet_set.all()[i].created_at.year :
-                nbDaysWithTweet = nbDaysWithTweet +1  
+            if tweet.created_at.day != Dict['compteTwitter'].tweet_set[i].created_at.day or tweet.created_at.month != Dict['compteTwitter'].tweet_set[i].created_at.month or tweet.created_at.year !=  Dict['compteTwitter'].tweet_set[i].created_at.year :
+                nbDaysWithTweet += 1  
             else : 
                 pass
             
