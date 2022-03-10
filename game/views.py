@@ -272,6 +272,21 @@ def analyse2(request, compteTwitter_id):
             ratioLikesPerTweet = 0
         ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
 
+    
+    #Objet ratioRTPerTweetPerMonth
+    ratioRTPerTweetPerMonth = []
+    for date in labels : 
+        nbRTPerMonth = 0
+        for tweet in Dict['compteTwitter'].tweet_set.all():
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                nbRTPerMonth=nbRTPerMonth+tweet.nb_rt
+        if Dict['datas'][date[0],date[1]] != 0 : #Condition pour éviter la division par 0
+            ratioRTPerTweet = round(nbRTPerMonth/Dict['datas'][date[0],date[1]], 2)
+        else : 
+            ratioRTPerTweet = 0
+        ratioRTPerTweetPerMonth.append(ratioRTPerTweet)
+
+
                 
 
 

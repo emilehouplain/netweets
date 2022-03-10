@@ -123,7 +123,7 @@
                                             <a id="nbTweetsPerMonth" class="dropdown-item">Nombre de Tweets</a>
                                             <a id="ratioLikesPerTweetPerMonth" class="dropdown-item">Likes moyens par Tweet</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
+                                            <a id="ratioRTPerTweetPerMonth" class="dropdown-item">Retweets moyens par Tweet</a>
                                         </div>
                                     </div>
                                 </div>
@@ -391,6 +391,20 @@ document.getElementById('ratioLikesPerTweetPerMonth')
             drawChart();
         });
 </script>
+
+
+<!-- Click RT Par Tweets-->
+<script>
+    document.getElementById('ratioRTPerTweetPerMonth')
+            .addEventListener('click', function (event) {
+                resetCanvas()
+                datasChartArea= JSON.parse("{{ratioRTPerTweetPerMonth|escapejs}}");
+                drawChart();
+            });
+    </script>
+
+
+
 <!-- Click NbTweetsPerMonth-->
 <script>
     document.getElementById('nbTweetsPerMonth')
