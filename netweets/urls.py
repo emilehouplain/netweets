@@ -19,7 +19,6 @@ from game import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.accueil),
     path('maj/', views.maj),
     path(r'game/', views.game),
     path('gameClick', views.gameClick, name="gameClick"),
@@ -34,7 +33,7 @@ urlpatterns = [
     path('faq/<int:compteTwitter_id>', views.faq, name="faq"),
     path('glossaire/<int:compteTwitter_id>', views.glossaire, name="glossaire"),
 	path('nuage/<int:compteTwitter_id>', views.nuage, name="nuage"),
-	path('formulaire2', views.formulaire2, name="formulaire2")
+	path('', views.formulaire2, name="formulaire2")
 
 
 

@@ -180,7 +180,6 @@ def analyse2(request, compteTwitter_id):
     Dict['compteTwitter']=compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 
     #WIDGET Encarts top
-
     #Object Nombre Moyen Retweets par Tweet
     nbRetweetsTotal=0
     nbTweetsTotal=0
@@ -190,9 +189,6 @@ def analyse2(request, compteTwitter_id):
     nbRetweetsMoyenParTweet=nbRetweetsTotal/nbTweetsTotal
     nbRetweetsMoyenParTweet=round(nbRetweetsMoyenParTweet,2)
 
-
-    
-    
     #WIDGET CHART PIE (chart-pie-demo.js)
     ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
     ratioFollowersPourcentage = round((ratioFollowers*100), 2)
@@ -206,6 +202,8 @@ def analyse2(request, compteTwitter_id):
     labels=[]
     firstTweet=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
     lastTweet=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
+    dateFirstTweet=firstTweet.created_at
+    dateLastTweet=lastTweet.created_at
     monthFirstTweet=firstTweet.created_at.month
     yearFirstTweet=firstTweet.created_at.year
     monthLastTweet=lastTweet.created_at.month

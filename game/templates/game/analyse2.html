@@ -18,6 +18,8 @@
                         <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Exporter les données</a>
                     </div>
+                    <p class="mb-4">{{ nbTweetsTotal }} Tweets analysés, du {{ dateFirstTweet }} au {{ dateLastTweet }} </p>
+
 
                     <!-- Content Row -->
                     <div class="row">
