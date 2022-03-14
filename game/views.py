@@ -5,6 +5,7 @@ import json
 from tkinter import E
 from tkinter.ttk import Separator
 from django.http import JsonResponse
+from importlib_metadata import _top_level_declared
 
 
 from .forms import *
@@ -37,6 +38,8 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 
 import unicodedata
+
+from dateutil.relativedelta import relativedelta
 
 
 ### --- USER ACCOUNT --- ###
@@ -162,16 +165,6 @@ def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour ap
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/tables.html', locals())
 
-#Objet ratioLikesPerTweetPerMonth
-def ratiolikesPerTweetPerMonth(request, compteTwitter_id) :
-    ratioLikesPerTweetPerMonth = []
-    for date in labels : 
-        nbLikesPerMonth = 0
-        for tweet in Dict['compteTwitter'].tweet_set.all():
-            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
-                nbLikesPerMonth=nbLikesPerMonth+tweet.nb_likes
-        ratioLikesPerTweet = round(nbLikesPerMonth/Dict['datas'][date[0],date[1]], 2)
-        ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
 
 ### --- Analyse2 (DashBoard - Index) --- ###
 def analyse2(request, compteTwitter_id):
@@ -199,6 +192,22 @@ def analyse2(request, compteTwitter_id):
     #WIDGET CHART AREA (chart-area-demo.js)
     #Sous widget - Nombre Tweets / Mois -
     #Objet Label
+    
+
+    #Try fix bug Netflix one year 
+    '''
+
+    labels2=[]
+    firstTweet2=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
+    lastTweet2=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
+
+    labels2.append([firstTweet2.created_at.month,firstTweet2.created_at.year]) #A changer pour que ca donne Month/Year[2:4]
+    while firstTweet2.created_at != lastTweet2.created_at :
+        date = firstTweet2.created_at
+        date.month = date.month+relativedelta(months=1)
+        labels2.append([firstTweet2.created_at.month,firstTweet2.created_at.year])
+'''
+
     labels=[]
     firstTweet=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
     lastTweet=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
