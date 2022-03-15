@@ -40,6 +40,7 @@ from django.views.generic import TemplateView
 import unicodedata
 
 from dateutil.relativedelta import relativedelta
+from babel.dates import format_datetime
 
 
 ### --- USER ACCOUNT --- ###
@@ -165,15 +166,34 @@ def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour ap
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/tables.html', locals())
 
+###--- Fonction construction labels ---###
+def buildLabels(firstDate, lastDate):
+    labels=[]
+    n=1
+    while firstDate.month != lastDate.month or firstDate.year != lastDate.year :
+        labels.append([firstDate.month, firstDate.year])
+        firstDate = firstDate + relativedelta(months=n)
+    labels.append([lastDate.month, lastDate.year])
+    return (labels)
+
 
 ### --- Analyse2 (DashBoard - Index) --- ###
 def analyse2(request, compteTwitter_id):
-
+    print('# ------- Fonction ANALYSE2.. ------- #')
     Dict={}
     Dict['compteTwitter']=compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 
+    #Objet période d'analyse
+    dateFirstTweet = Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at
+    dateLastTweet = Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at
+    dateFirstTweet = format_datetime(dateFirstTweet, locale='fr')
+    dateLastTweet = format_datetime(dateLastTweet, locale='fr')
+
+
     #WIDGET Encarts top
     #Object Nombre Moyen Retweets par Tweet
+    print('Debut Widgets Encarts TOP')
+
     nbRetweetsTotal=0
     nbTweetsTotal=0
     for tweet in Dict['compteTwitter'].tweet_set.all() :
@@ -181,70 +201,25 @@ def analyse2(request, compteTwitter_id):
         nbTweetsTotal=nbTweetsTotal+1
     nbRetweetsMoyenParTweet=nbRetweetsTotal/nbTweetsTotal
     nbRetweetsMoyenParTweet=round(nbRetweetsMoyenParTweet,2)
+    print('END Widgets Encarts TOP')
 
     #WIDGET CHART PIE (chart-pie-demo.js)
+    print('Debut Widgets Chart Pie')
     ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
     ratioFollowersPourcentage = round((ratioFollowers*100), 2)
     ratioFriendsPourcentage = round(100-ratioFollowersPourcentage, 2)
     data=[ratioFollowersPourcentage, ratioFriendsPourcentage] #A remplacer par les valeurs calculées voulues (ex : repartition RT/Tweets)
     data=json.dumps(data)
+    print('END Widgets Chart Pie')
+
 
     #WIDGET CHART AREA (chart-area-demo.js)
+    print('Debut Widget Chart Area')
+
     #Sous widget - Nombre Tweets / Mois -
     #Objet Label
-    
+    labels = buildLabels(Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at, Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at )
 
-    #Try fix bug Netflix one year 
-    '''
-
-    labels2=[]
-    firstTweet2=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
-    lastTweet2=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
-
-    labels2.append([firstTweet2.created_at.month,firstTweet2.created_at.year]) #A changer pour que ca donne Month/Year[2:4]
-    while firstTweet2.created_at != lastTweet2.created_at :
-        date = firstTweet2.created_at
-        date.month = date.month+relativedelta(months=1)
-        labels2.append([firstTweet2.created_at.month,firstTweet2.created_at.year])
-'''
-
-    labels=[]
-    firstTweet=Dict['compteTwitter'].tweet_set.order_by('created_at')[0]
-    lastTweet=Dict['compteTwitter'].tweet_set.order_by('-created_at')[0] #tweet le plus ancien
-    dateFirstTweet=firstTweet.created_at
-    dateLastTweet=lastTweet.created_at
-    monthFirstTweet=firstTweet.created_at.month
-    yearFirstTweet=firstTweet.created_at.year
-    monthLastTweet=lastTweet.created_at.month
-    yearLastTweet=lastTweet.created_at.year
-
-    i=True
-
-
-    month=monthFirstTweet
-    year=yearFirstTweet
-
-    while i==True : #Première année
-        while month < 13 :
-            labels.append([month,year]) #A changer pour que ca donne Month/Year[2:4]
-            month=month+1
-        i=False
-        month=0
-        year=year+1
-    
-    while year<yearLastTweet : #Années du milieu
-        while month<12 :
-            month=month+1
-            labels.append([month,year])
-        month=0
-        year=year+1
-
-    while month < monthLastTweet : 
-        month=month+1
-        labels.append([month,year])
-
-
-    
     
     
     #Objet général DictionnaireDatas
@@ -313,9 +288,13 @@ def analyse2(request, compteTwitter_id):
         elemClean=str(elem[0])+'/'+str(elem[1])
         labelsClean.append(elemClean)
     labelsClean = json.dumps(labelsClean)
+    print('END Widget Chart Area')
+
 
     #WIDGET PROJECTS (=Statstiques -> barres horizontales)
     #Object Retweets Ratio
+    print('Debut RT Ratio')
+
     nbTweetsRt=0
     nbTweetsWithoutRt=0
     for tweet in Dict['compteTwitter'].tweet_set.all() :
@@ -338,14 +317,19 @@ def analyse2(request, compteTwitter_id):
     
     ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
     ratioTweetsRtPourcentage = round(ratioTweetsRt*100, 2)
+    print('END RT Ratio')
+
 
     #Object Tweets avec Hashtag
+    print('Debut Tweets avec Hashtag')
+
     nbTweetsHashtag=0
     for tweet in Dict['compteTwitter'].tweet_set.all() :
         if "#" in tweet.text :
             nbTweetsHashtag=nbTweetsHashtag+1
     ratioNbTweetsHashtag = nbTweetsHashtag / len(Dict['compteTwitter'].tweet_set.all())
     ratioNbTweetsHashtagPourcentage = round (ratioNbTweetsHashtag*100, 2)
+    print('END Tweets avec Hashtag')
 
     
     #Object RatioDaysWithTweet
@@ -359,7 +343,6 @@ def analyse2(request, compteTwitter_id):
     nbDays = nbDays.days
 
     for tweet in Dict['compteTwitter'].tweet_set.order_by('-created_at') : #combien de day différent avec un tweet ?
-        print('debut try', tweet.text)
         try : #Permet de prendre en compte le premier Tweet
             if tweet.created_at.day != Dict['compteTwitter'].tweet_set[i].created_at.day or tweet.created_at.month != Dict['compteTwitter'].tweet_set[i].created_at.month or tweet.created_at.year !=  Dict['compteTwitter'].tweet_set[i].created_at.year :
                 nbDaysWithTweet += 1  
@@ -379,17 +362,19 @@ def analyse2(request, compteTwitter_id):
 
 
     #WIDGET BEST TWEET (barres horizontales)
+    print('Debut Widget Best Tweets')
     bestTweet_id=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
     popularTweet_nb_like=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
     popularTweet_nb_rt=Dict['compteTwitter'].tweet_set.order_by('-nb_rt')[0].id_tweet
     popularTweet_nb_quote=Dict['compteTwitter'].tweet_set.order_by('-nb_quote')[0].id_tweet
     popularTweet_nb_reply=Dict['compteTwitter'].tweet_set.order_by('-nb_reply')[0].id_tweet
+    print('END Widget Best Tweets')
 
 
 
 
     
-
+    print('# ------- END Fonction ANALYSE2.. ------- #')
     return render(request, 'game/analyse2.html', locals())
 
 
