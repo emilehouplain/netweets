@@ -62,6 +62,8 @@ def register(request):
 def formulaire2(request):
     
     Dict={}
+    pdb.set_trace()
+    lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
     
     form = FormulaireForm(request.POST or None)
     
@@ -121,6 +123,123 @@ def formulaire(request):
 
     
 ### --- TEMPLATES DASHBOARD --- ###
+
+### --- Roadmap (DashBoard - Glossaire) --- ###
+def roadmap(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    #WIDGET BEST TWEET (barres horizontales)
+    print('Debut Widget Best Tweets')
+    bestTweet_id=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
+    popularTweet_nb_like=Dict['compteTwitter'].tweet_set.order_by('-nb_like')[0].id_tweet
+    popularTweet_nb_rt=Dict['compteTwitter'].tweet_set.order_by('-nb_rt')[0].id_tweet
+    popularTweet_nb_quote=Dict['compteTwitter'].tweet_set.order_by('-nb_quote')[0].id_tweet
+    popularTweet_nb_reply=Dict['compteTwitter'].tweet_set.order_by('-nb_reply')[0].id_tweet
+    print('END Widget Best Tweets')
+
+
+    #WIDGET Encarts top
+    #Object Nombre Moyen Retweets par Tweet
+    print('Debut Widgets Encarts TOP')
+    dateFirstTweet = Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at
+    dateLastTweet = Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at
+    dateFirstTweet = format_datetime(dateFirstTweet, locale='fr')
+    dateLastTweet = format_datetime(dateLastTweet, locale='fr')
+
+
+
+    nbRetweetsTotal=0
+    nbTweetsTotal=0
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        nbRetweetsTotal=nbRetweetsTotal+tweet.nb_rt
+        nbTweetsTotal=nbTweetsTotal+1
+    nbRetweetsMoyenParTweet=nbRetweetsTotal/nbTweetsTotal
+    nbRetweetsMoyenParTweet=round(nbRetweetsMoyenParTweet,2)
+    print('END Widgets Encarts TOP')
+
+
+    #WIDGET CHART AREA (chart-area-demo.js)
+    print('Debut Widget Chart Area')
+
+    #Sous widget - Nombre Tweets / Mois -
+    #Objet Label
+    labels = buildLabels(Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at, Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at )
+
+    
+    
+    #Objet général DictionnaireDatas
+    Dict['datas']={}
+    for date in labels : 
+        Dict['datas'][date[0],date[1]]=0
+
+    #Objet nbTweetsPerMonth
+    nbTweetsPerMonth=[]
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        for date in labels :
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                Dict['datas'][date[0],date[1]]= Dict['datas'][date[0],date[1]]+1
+            else:
+                pass
+
+    #Construction de nbTweetsPerMonth
+    nbTweetsPerMonth=[]
+    for key in Dict['datas'].keys() :
+        nbTweetsPerMonth.append(Dict['datas'][key])
+    
+    #Objet ratioLikesPerTweetPerMonth
+    ratioLikesPerTweetPerMonth = []
+    for date in labels : 
+        nbLikesPerMonth = 0
+        for tweet in Dict['compteTwitter'].tweet_set.all():
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                nbLikesPerMonth=nbLikesPerMonth+tweet.nb_like
+        if Dict['datas'][date[0],date[1]] != 0 : #Condition pour éviter la division par 0
+            ratioLikesPerTweet = round(nbLikesPerMonth/Dict['datas'][date[0],date[1]], 2)
+        else : 
+            ratioLikesPerTweet = 0
+        ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
+
+    
+    #Objet ratioRTPerTweetPerMonth
+    ratioRTPerTweetPerMonth = []
+    for date in labels : 
+        nbRTPerMonth = 0
+        for tweet in Dict['compteTwitter'].tweet_set.all():
+            if tweet.created_at.month == date[0] and tweet.created_at.year == date[1] :
+                nbRTPerMonth=nbRTPerMonth+tweet.nb_rt
+        if Dict['datas'][date[0],date[1]] != 0 : #Condition pour éviter la division par 0
+            ratioRTPerTweet = round(nbRTPerMonth/Dict['datas'][date[0],date[1]], 2)
+        else : 
+            ratioRTPerTweet = 0
+        ratioRTPerTweetPerMonth.append(ratioRTPerTweet)
+
+
+                
+
+
+    #Verif recup totalité des tweets
+    compteur=0
+    nbTweetsObject = len(Dict['compteTwitter'].tweet_set.all())
+    for key in Dict['datas'].keys() :
+        compteur=compteur+Dict['datas'][key]
+    print('Nombre total de Tweets recupérés initialement : ', nbTweetsObject)
+    print('Nombre total de Tweets poussés dans le widget Chart Area : ', compteur)
+    print('Liste des tweets : ', nbTweetsPerMonth)
+
+    
+    #Rework to send to JS
+    labelsClean=[]
+    for elem in labels :
+        elemClean=str(elem[0])+'/'+str(elem[1])
+        labelsClean.append(elemClean)
+    labelsClean = json.dumps(labelsClean)
+    print('END Widget Chart Area')
+
+
+
+    return render(request, 'game/roadmap.html', locals())
+
 
 ### --- Glossaire (DashBoard - Glossaire) --- ###
 def glossaire(request, compteTwitter_id):
@@ -205,9 +324,14 @@ def analyse2(request, compteTwitter_id):
 
     #WIDGET CHART PIE (chart-pie-demo.js)
     print('Debut Widgets Chart Pie')
-    ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
-    ratioFollowersPourcentage = round((ratioFollowers*100), 2)
-    ratioFriendsPourcentage = round(100-ratioFollowersPourcentage, 2)
+    if Dict['compteTwitter'].nb_friends == 0 or Dict['compteTwitter'].nb_followers == 0 : 
+        pdb.set_trace()
+        ratioFollowersPourcentage = 50
+        ratioFriendsPourcentage = 50
+    else :
+        ratioFollowers = Dict['compteTwitter'].nb_followers/(Dict['compteTwitter'].nb_friends+Dict['compteTwitter'].nb_followers)
+        ratioFollowersPourcentage = round((ratioFollowers*100), 2)
+        ratioFriendsPourcentage = round(100-ratioFollowersPourcentage, 2)
     data=[ratioFollowersPourcentage, ratioFriendsPourcentage] #A remplacer par les valeurs calculées voulues (ex : repartition RT/Tweets)
     data=json.dumps(data)
     print('END Widgets Chart Pie')

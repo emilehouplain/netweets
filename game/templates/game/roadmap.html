@@ -1,0 +1,207 @@
+{% extends 'game/base_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+
+
+                <!-- Begin Page Content -->
+                <!-- TEST -->
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">RoadMap</h1>
+                    <p class="mb-4">Prévision d'ajouts de features</a>.</p>
+                    <p class="mb-4">{{ nbTweetsTotal }} Tweets analysés, du {{ dateFirstTweet }} au {{ dateLastTweet }} </p>
+
+
+                    
+
+
+                    <div class="row">
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Tweets</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Dict.compteTwitter.nb_tweets }}</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comment fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nombre moyen de Retweets par Tweet
+                                        </div>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto">
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ nbRetweetsMoyenParTweet }}</div>
+                                            </div>
+                                            <div class="col">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-heart fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        
+
+                        <!-- Area Chart -->
+                        <div class="col-xl-12 col-lg-7">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Tweets overtime</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Mesure :</div>
+                                            <a id="nbTweetsPerMonth" class="dropdown-item">Nombre de Tweets</a>
+                                            <a id="ratioLikesPerTweetPerMonth" class="dropdown-item">Likes moyens par Tweet</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a id="ratioRTPerTweetPerMonth" class="dropdown-item">Retweets moyens par Tweet</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End Widget Area -->
+
+                        <!-- Widget Best Tweet -->
+                        <div class="col-xl-12 col-lg-7">
+                        <div class="card shadow mb-12">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Meilleur Tweet !</h6>
+                                <div class="dropdown no-arrow">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                        aria-labelledby="dropdownMenuLink">
+                                        <div class="dropdown-header">Meilleur Tweet :</div>
+                                        <a id="popularTweet_nb_like_html" class="dropdown-item">Nombre de Likes</a>
+                                        <a id="popularTweet_nb_rt_html" class="dropdown-item">Nombre de Retweets</a>
+                                        <a id="popularTweet_nb_reply" class="dropdown-item">Nombre de réponses</a>
+                                        <a id="popularTweet_nb_quote" class="dropdown-item">Nombre de commentaires</a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-body">
+                                
+                                <div style="text-align: center;">
+                                <blockquote id="54321" class="twitter-tweet">
+                                    <a id="12345" href="https://twitter.com/x/status/{{bestTweet_id}}"></a> 
+
+                                    </blockquote></div>
+                            
+                                
+                            
+                        </div>
+                        </div>
+                    
+                        <!-- End Widget Best Tweet -->
+                        
+                    
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+
+</body>
+
+<!-- Script JS nécessaire pour dessiner la courbe du widget Chart Area-->
+<script>
+    var labelsClean=JSON.parse("{{labelsClean|escapejs}}");
+</script>
+<script>
+    var  datasChartArea= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
+    drawChart();
+</script>
+
+<!-- Reset Chart Area-->
+<script>
+var resetCanvas = function(){
+    $('#myAreaChart').remove(); // this is my <canvas> element
+    $('.chart-area').append('<canvas id="myAreaChart"><canvas>');
+  };
+</script>
+<!-- Click Likes Par Tweets-->
+<script>
+document.getElementById('ratioLikesPerTweetPerMonth')
+        .addEventListener('click', function (event) {
+            resetCanvas()
+            datasChartArea= JSON.parse("{{ratioLikesPerTweetPerMonth|escapejs}}");
+            drawChart();
+        });
+</script>
+
+
+<!-- Click RT Par Tweets-->
+<script>
+    document.getElementById('ratioRTPerTweetPerMonth')
+            .addEventListener('click', function (event) {
+                resetCanvas()
+                datasChartArea= JSON.parse("{{ratioRTPerTweetPerMonth|escapejs}}");
+                drawChart();
+            });
+    </script>
+
+
+
+<!-- Click NbTweetsPerMonth-->
+<script>
+    document.getElementById('nbTweetsPerMonth')
+            .addEventListener('click', function (event) {
+                resetCanvas()
+                datasChartArea= JSON.parse("{{nbTweetsPerMonth|escapejs}}");
+                drawChart();
+            });
+    </script>
+
+<!-- Script JS nécessaire pour l'embedded twitter-->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}

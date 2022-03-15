@@ -190,26 +190,26 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Statistiques</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="small font-weight-bold">Pourcentage de Retweet <span
-                                            class="float-right">{{ ratioTweetsRtPourcentage }}%</span></h4>
+                                    <h4 class="small font-weight-bold">Retweet ({{ ratioTweetsRtPourcentage }}%) <span
+                                            class="float-right">Tweet</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar bg-danger" role="progressbar" style="width:{{ ratioTweetsRtPourcentage }}%"
                                             aria-valuenow="{{ ratioTweetsRtPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Pourcentage de Friends sur total Friends + Followers<span
-                                            class="float-right">{{ ratioFriendsPourcentage }}%</span></h4>
+                                    <h4 class="small font-weight-bold">Friends ({{ratioFriendsPourcentage}}%)<span
+                                            class="float-right">Followers</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar bg-warning" role="progressbar" style="width: {{ ratioFriendsPourcentage }}%"
                                             aria-valuenow="{{ ratioFriendsPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Pourcentage de Tweets avec Hashtag<span
-                                            class="float-right">{{ ratioNbTweetsHashtagPourcentage }}%</span></h4>
+                                    <h4 class="small font-weight-bold">Hashtags ({{ ratioNbTweetsHashtagPourcentage }}%)<span
+                                            class="float-right">Sans hashtags</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar" role="progressbar" style="width: {{ ratioNbTweetsHashtagPourcentage }}%"
                                             aria-valuenow="{{ ratioNbTweetsHashtagPourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <h4 class="small font-weight-bold">Pourcentage de jours avec au moins un Tweet<span
-                                            class="float-right">{{ ratioDaysWithTweet }}%</span></h4>
+                                    <h4 class="small font-weight-bold">Jours d'activités ({{ ratioDaysWithTweet }}%)<span
+                                            class="float-right">Inactivité</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar bg-info" role="progressbar" style="width: {{ ratioDaysWithTweet }}%"
                                             aria-valuenow="{{ ratioDaysWithTweet }}" aria-valuemin="0" aria-valuemax="100"></div>
