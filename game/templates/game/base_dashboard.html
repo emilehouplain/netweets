@@ -125,7 +125,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Compte Twitter</span>
+                    <span>Compte Twitter <span style="color: red;"><sup><strong>BETA</strong></sup></span></span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
@@ -151,8 +151,10 @@
                         <h6 class="collapse-header">Modules :</h6>
                         <a class="collapse-item" href="">Visualisation globale</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'tables' Dict.compteTwitter.id_compteTwitter %}">Tableau</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
-                        <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}">Nuage sémantique</a>
-                        <a class="collapse-item" href="">Rapports personnalisés</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}">Nuage sémantique<span style="color: red;"><sup><strong>BETA</strong></sup></span></a>
+                        <a class="collapse-item" href="">Géolocalisation<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'sentimental' Dict.compteTwitter.id_compteTwitter %}">Analyse sentimentale<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="">Rapports<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                     </div>
                 </div>
             </li>

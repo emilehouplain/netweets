@@ -42,6 +42,17 @@ import unicodedata
 from dateutil.relativedelta import relativedelta
 from babel.dates import format_datetime
 
+#IMPORTS : Analyse sentimentale 
+from textblob import TextBlob
+from PIL import Image
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from langdetect import detect
+from nltk.stem import SnowballStemmer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import CountVectorizer
+import nltk
+nltk.download('vader_lexicon')
+
 
 ### --- USER ACCOUNT --- ###
 def login_html(request):
@@ -62,7 +73,6 @@ def register(request):
 def formulaire2(request):
     
     Dict={}
-    pdb.set_trace()
     lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
     
     form = FormulaireForm(request.POST or None)
@@ -123,6 +133,58 @@ def formulaire(request):
 
     
 ### --- TEMPLATES DASHBOARD --- ###
+
+#Fonction pourcentage utilisée dans l'analyse sentimentale
+def percentage(part,whole):
+    return 100 * float(part)/float(whole)
+
+### --- sentimental (DashBoard - Analyse sentimentale) --- ###
+def sentimental(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    #Init vars globales pour analyse sentimentale
+    positive = 0
+    negative = 0
+    neutral = 0
+    polarity = 0
+    tweet_list = []
+    neutral_list = []
+    negative_list = []
+    positive_list = []
+    noOfTweet = len(Dict['compteTwitter'].tweet_set.all())
+
+    #Analyse sentimentale
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        tweet_list.append(tweet.text)
+        analysis = TextBlob(tweet.text)
+        score = SentimentIntensityAnalyzer().polarity_scores(tweet.text)
+        neg = score['neg']
+        neu = score['neu']
+        pos = score['pos']
+        comp = score['compound']
+        polarity += analysis.sentiment.polarity
+        
+        if neg > pos:
+            negative_list.append(tweet.text)
+            negative += 1
+        elif pos > neg:
+            positive_list.append(tweet.text)
+            positive += 1
+        elif pos == neg:
+            neutral_list.append(tweet.text)
+            neutral += 1
+
+    positive = percentage(positive, noOfTweet)
+    negative = percentage(negative, noOfTweet)
+    neutral = percentage(neutral, noOfTweet)
+    polarity = percentage(polarity, noOfTweet)
+    positive = format(positive, '.1f')
+    negative = format(negative, '.1f')
+    neutral = format(neutral, '.1f')
+
+    return render(request, 'game/sentimental.html', locals())
+
 
 ### --- Roadmap (DashBoard - Glossaire) --- ###
 def roadmap(request, compteTwitter_id):
