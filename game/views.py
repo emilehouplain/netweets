@@ -46,12 +46,14 @@ from babel.dates import format_datetime
 from textblob import TextBlob
 from PIL import Image
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from langdetect import detect
 from nltk.stem import SnowballStemmer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import CountVectorizer
 import nltk
 nltk.download('vader_lexicon')
+from deep_translator import GoogleTranslator
+
+ 
 
 
 ### --- USER ACCOUNT --- ###
@@ -100,6 +102,8 @@ def formulaire2(request):
     # Quoiqu'il arrive, on affiche la page du formulaire.
     return render(request, 'game/formulaire2.html', locals())
 
+#progress_bar
+
 
 #formulaire# 
 def formulaire(request):
@@ -140,9 +144,12 @@ def percentage(part,whole):
 
 ### --- sentimental (DashBoard - Analyse sentimentale) --- ###
 def sentimental(request, compteTwitter_id):
+    
+    print("Début analyse sentimentale")
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 
+    
     #Init vars globales pour analyse sentimentale
     positive = 0
     negative = 0
@@ -153,12 +160,15 @@ def sentimental(request, compteTwitter_id):
     negative_list = []
     positive_list = []
     noOfTweet = len(Dict['compteTwitter'].tweet_set.all())
-
-    #Analyse sentimentale
+    
+    #LEGACY - Analyse sentimentale
     for tweet in Dict['compteTwitter'].tweet_set.all():
-        tweet_list.append(tweet.text)
-        analysis = TextBlob(tweet.text)
-        score = SentimentIntensityAnalyzer().polarity_scores(tweet.text)
+        print(tweet)
+        tweet_text = GoogleTranslator(source='auto', target='en').translate(tweet.text)
+
+        tweet_list.append(tweet_text)
+        analysis = TextBlob(tweet_text)
+        score = SentimentIntensityAnalyzer().polarity_scores(tweet_text)
         neg = score['neg']
         neu = score['neu']
         pos = score['pos']
@@ -166,13 +176,13 @@ def sentimental(request, compteTwitter_id):
         polarity += analysis.sentiment.polarity
         
         if neg > pos:
-            negative_list.append(tweet.text)
+            negative_list.append(tweet_text)
             negative += 1
         elif pos > neg:
-            positive_list.append(tweet.text)
+            positive_list.append(tweet_text)
             positive += 1
         elif pos == neg:
-            neutral_list.append(tweet.text)
+            neutral_list.append(tweet_text)
             neutral += 1
 
     positive = percentage(positive, noOfTweet)
@@ -182,6 +192,31 @@ def sentimental(request, compteTwitter_id):
     positive = format(positive, '.1f')
     negative = format(negative, '.1f')
     neutral = format(neutral, '.1f')
+        
+    '''
+
+    #NEW - Analyse sentimentale
+    #1 - Construction liste des Tweets
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        print(tweet)
+        tweet_list.append(tweet.text)
+    #2 - Clean liste des tweets
+    #2.1 - Suppression doublons
+    tweet_list.drop_duplicates(inplace = True)
+    #2.2 - Creation nouveau DataFrame
+    tw_list = pd.DataFrame(tweet_list)
+    tw_list['text'] = tw_list[0]
+    #2.3 - Clean RT, Punctuation etc
+    remove_rt = lambda x: re.sub('RT @\w+: '," ",x)
+    rt = lambda x: re.sub("(@[A-Za-z0–9]+)|([⁰-9A-Za-z \t])|(\w+:\/\/\S+)"," ",x)
+    tw_list["text"] = tw_list.text.map(remove_rt).map(rt)
+    tw_list["text"] = tw_list.text.str.lower()
+    tw_list.head(10)
+    pdb.set_trace()
+    '''
+
+
+
 
     return render(request, 'game/sentimental.html', locals())
 
@@ -387,7 +422,6 @@ def analyse2(request, compteTwitter_id):
     #WIDGET CHART PIE (chart-pie-demo.js)
     print('Debut Widgets Chart Pie')
     if Dict['compteTwitter'].nb_friends == 0 or Dict['compteTwitter'].nb_followers == 0 : 
-        pdb.set_trace()
         ratioFollowersPourcentage = 50
         ratioFriendsPourcentage = 50
     else :
@@ -566,8 +600,8 @@ def analyse2(request, compteTwitter_id):
 
 
 
-#WIDGET EXPORT XL
-def export_csv(request, compteTwitter_id):
+#WIDGETS EXPORT XL par Module
+def analyse2_export_csv(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 
@@ -581,6 +615,75 @@ def export_csv(request, compteTwitter_id):
     for tweet in tweetsToExport:
         row=[Dict['compteTwitter'].username, tweet.text.encode('ascii','ignore'),tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
         writer.writerow(row)
+    return(response)
+
+def sentimental_export_csv(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="export-datas.csv"'
+
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['Username','Tweet text', 'Sentiment', 'Nombre de retweet', 'Nombre de likes', 'Nombre de citations', 'Nombre de réponses','Date de création','Langue'])
+
+    print("Début analyse sentimentale")
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    
+    #Init vars globales pour analyse sentimentale
+    positive = 0
+    negative = 0
+    neutral = 0
+    polarity = 0
+    tweet_list = []
+    neutral_list = []
+    negative_list = []
+    positive_list = []
+    noOfTweet = len(Dict['compteTwitter'].tweet_set.all())
+    
+    #LEGACY - Analyse sentimentale
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        print(tweet)
+        tweet_text = GoogleTranslator(source='auto', target='en').translate(tweet.text)
+
+        tweet_list.append(tweet_text)
+        analysis = TextBlob(tweet_text)
+        score = SentimentIntensityAnalyzer().polarity_scores(tweet_text)
+        neg = score['neg']
+        neu = score['neu']
+        pos = score['pos']
+        comp = score['compound']
+        polarity += analysis.sentiment.polarity
+        
+        if neg > pos:
+            negative_list.append(tweet_text)
+            negative += 1
+            etat = "Negatif"
+        elif pos > neg:
+            positive_list.append(tweet_text)
+            positive += 1
+            etat = "Positif"
+
+        elif pos == neg:
+            neutral_list.append(tweet_text)
+            neutral += 1
+            etat = "Neutre"
+
+
+        row=[Dict['compteTwitter'].username, tweet.text.encode('ascii','ignore'), etat, tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
+        writer.writerow(row)
+
+    positive = percentage(positive, noOfTweet)
+    negative = percentage(negative, noOfTweet)
+    neutral = percentage(neutral, noOfTweet)
+    polarity = percentage(polarity, noOfTweet)
+    positive = format(positive, '.1f')
+    negative = format(negative, '.1f')
+    neutral = format(neutral, '.1f')
+    return(response)
+
 
 #WIDGET PROJECTS (barres horizontales)
     

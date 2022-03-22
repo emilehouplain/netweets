@@ -11,7 +11,7 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Analyse sentimentale - {{ Dict.compteTwitter.username }}</h1>
-                    <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                    <a href="{% url 'sentimental_export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
 
                 </div>
@@ -28,7 +28,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                         Note de positivité</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ positive }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ positive }}%</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-smile fa-2x text-gray-300"></i>
@@ -48,7 +48,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                         Note de neutralité</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ neutral }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ neutral }}%</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-meh fa-2x text-gray-300"></i>
@@ -67,7 +67,7 @@
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                         Note de négativité</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ negative }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ negative }}%</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-frown fa-2x text-gray-300"></i>

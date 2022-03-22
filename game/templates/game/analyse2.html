@@ -15,7 +15,7 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard - {{ Dict.compteTwitter.username }}</h1>
-                        <a href="{% url 'export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        <a href="{% url 'analyse2_export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Exporter les données</a>
                     </div>
                     <p class="mb-4">{{ nbTweetsTotal }} Tweets analysés, du {{ dateFirstTweet }} au {{ dateLastTweet }} </p>
@@ -217,72 +217,23 @@
                                 </div>
                             </div>
 
-                            <!-- Color System -->
+                            <!-- Widget @CompteTwitter -->
                             <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">@{{ Dict.compteTwitter.username }}</h6>
                                 </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            src="{{ Dict.compteTwitter.profile_image_url }}" alt="...">
                                     </div>
+                                    <p>Description : {{ Dict.compteTwitter.description }}</p>
+                                    <a target="_blank" rel="nofollow" href="https://twitter.com/{{Dict.compteTwitter.username}}">Accéder au compte Twitter</a>
                                 </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            <!-- End Widget @CompteTwitter -->
+
                             </div>
 
                         </div>
@@ -325,21 +276,6 @@
                         <!-- End Widget Best Tweet -->
                             
 
-                            <!-- Widget @CompteTwitter -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">@{{ Dict.compteTwitter.username }}</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="{{ Dict.compteTwitter.profile_image_url }}" alt="...">
-                                    </div>
-                                    <p>Description : {{ Dict.compteTwitter.description }}</p>
-                                    <a target="_blank" rel="nofollow" href="https://twitter.com/{{Dict.compteTwitter.username}}">Accéder au compte Twitter</a>
-                                </div>
-                            </div>
-                            <!-- End Widget @CompteTwitter -->
 
 
 

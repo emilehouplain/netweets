@@ -27,7 +27,7 @@ urlpatterns = [
     path('formulaire', views.formulaire, name="formulaire"),
     path('tables/<int:compteTwitter_id>', views.tables, name="tables"), #int = id du compteTwitter analysé : meme modèle à utiliser pour le reste du DB ?
     path('analyse2/<int:compteTwitter_id>', views.analyse2, name="analyse2"),
-    path('export/csv/<int:compteTwitter_id>', views.export_csv, name='export_csv'),
+    path('export/csv/<int:compteTwitter_id>', views.analyse2_export_csv, name='analyse2_export_csv'),
     path('geolocalisation/<int:compteTwitter_id>', views.geolocalisation, name="geolocalisation"), 
     path('reports/<int:compteTwitter_id>', views.reports, name="reports"),
     path('faq/<int:compteTwitter_id>', views.faq, name="faq"),
@@ -35,6 +35,8 @@ urlpatterns = [
 	path('roadmap/<int:compteTwitter_id>', views.roadmap, name="roadmap"),
 	path('nuage/<int:compteTwitter_id>', views.nuage, name="nuage"),
 	path('sentimental/<int:compteTwitter_id>', views.sentimental, name="sentimental"),
+	path('export/csv2/<int:compteTwitter_id>', views.sentimental_export_csv, name='sentimental_export_csv'),
+
 
 	path('', views.formulaire2, name="formulaire2")
 
