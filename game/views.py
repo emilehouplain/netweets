@@ -53,7 +53,14 @@ import nltk
 nltk.download('vader_lexicon')
 from deep_translator import GoogleTranslator
 
- 
+#Wordcloud
+import pandas as pd
+import numpy as np
+from wordcloud import WordCloud, STOPWORDS
+from PIL import Image
+import re
+from nltk.corpus import stopwords
+from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
 
 
 ### --- USER ACCOUNT --- ###
@@ -357,17 +364,47 @@ def geolocalisation(request, compteTwitter_id):
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/geolocalisation.html', locals())
 
-### --- Nuage de points (DashBoard - Nuage de points) --- ###
+### --- Nuage de mots (DashBoard - Nuage de points - WordCloud) --- ###
+def create_wordcloud(text):
+    #mask = np.array(Image.open('cloud.png'))
+    stopwords = list(fr_stop)
+    wc = WordCloud(background_color='white',
+    # mask = mask,
+    max_words=3000,
+    stopwords=stopwords,
+    repeat=False)
+    wc.generate(str(text))
+    wc.to_file('game/static/game/wordcloud/wc.png')
+    print('Word Cloud Saved Successfully')
+    path='game/static/game/wordcloud/wc.png'
+    # display(Image.open(path))
+
 def nuage(request, compteTwitter_id):
+    print('--- START Fonction WordCloud ---')
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
-    textGlobal=[]
-    for tweet in Dict['compteTwitter'].tweet_set.all():
-        textGlobal.append(tweet)
-    # wordcloud = WordCloud(background_color = 'white', max_words = 50).generate(textGlobal) #manque la librairie
-    plt.imshow(wordcloud)
-    plt.axis("off")
-    plt.show()
+    liste_tweets = []
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        liste_tweets.append(tweet.text)
+    tw_list = pd.DataFrame(liste_tweets)
+    tw_list["text"] = tw_list[0]
+    #Clean tweets : RT / username / lowercase
+    liste_tweetsClean = []
+    for tweet in tw_list["text"] :
+        tweet = re.sub(r'@[A-Z0-9a-z_:]+','',tweet)
+        tweet = re.sub(r'^[RT]+','',tweet)
+        tweet = re.sub('https?://[A-Za-z0-9./]+','',tweet)
+        tweet = tweet.lower()
+        liste_tweetsClean.append(tweet)
+    tw_listClean = pd.DataFrame(liste_tweetsClean)
+    tw_listClean["text"] = tw_listClean[0]
+    #Creating wordcloud for all tweets
+    listeCleanFinale = []
+    for text in tw_listClean["text"] :
+        listeCleanFinale.append(text)
+    create_wordcloud(listeCleanFinale)
+    print('--- END Fonction WordCloud ---')
+
     return render(request, 'game/nuage.html', locals())
 
 ### --- Reports (DashBoard - Reports) --- ###
