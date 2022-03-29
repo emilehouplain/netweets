@@ -51,7 +51,9 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import CountVectorizer
 import nltk
 nltk.download('vader_lexicon')
+nltk.download('stopwords')
 from deep_translator import GoogleTranslator
+import string
 
 #Wordcloud
 import pandas as pd
@@ -61,6 +63,181 @@ from PIL import Image
 import re
 from nltk.corpus import stopwords
 from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
+
+### --- Moulinette --- ###
+def nuage(request, compteTwitter_id):
+    print('--- START Fonction MOULINETTE ---')
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="export-datas.csv"'
+
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['Username','Created at','Tweet text', 'Nombre de retweet', 'Nombre de likes', 'Nombre de citations', 'Nombre de réponses','Date de création','Sentiment','Positif',"Neutre",'Negatif', 'Comp', "Pol"])
+
+    Dict={}
+    nbWordsTweet=0
+    nbWordsTotal=0
+    listWordsTotal=[]
+    listeWordsUnique=[]
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    noOfTweet = len(Dict['compteTwitter'].tweet_set.all()) #Nb tweets analysés (6)
+
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        nbWordsTweet = len(tweet.text.split())
+        nbWordsTotal = nbWordsTotal + nbWordsTweet
+        for mot in tweet.text.split() :
+            listWordsTotal.append(mot)
+    
+    dateFirstTweet = Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at
+    dateLastTweet = Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at
+
+    noOfTweet = len(Dict['compteTwitter'].tweet_set.all()) #Nb tweets analysés (6)
+
+    print('Tweets analysés : ', noOfTweet) #Nb tweets analysés (6)
+    print('Mots analysés : ', nbWordsTotal) #Nb words analysés (4)
+    listeWordsUnique = set(listWordsTotal)
+    print('Mots UNIQUES analysés : ',len(listeWordsUnique)) #Nb words uniques analysés (5)
+    print('Premier Tweet Analysé : ', dateFirstTweet)
+    print('Dernier Tweet Analysé : ', dateLastTweet)
+
+    #Analyse Sentimental (7)
+    #Init vars globales pour analyse sentimentale
+    positive = 0
+    negative = 0
+    neutral = 0
+    polarity = 0
+    tweet_list = []
+    neutral_list = []
+    negative_list = []
+    positive_list = []
+    global_list = []
+    noOfTweet = len(Dict['compteTwitter'].tweet_set.all())
+
+
+    #LEGACY - Analyse sentimentale
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        tweet_textENG = GoogleTranslator(source='auto', target='en').translate(tweet.text)
+        global_list.append(tweet.text)
+        tweet_list.append(tweet_textENG)
+        analysis = TextBlob(tweet_textENG)
+        score = SentimentIntensityAnalyzer().polarity_scores(tweet_textENG)
+        neg = score['neg']
+        neu = score['neu']
+        pos = score['pos']
+        comp = score['compound']
+        polarity += analysis.sentiment.polarity
+        
+        if neg > pos:
+            negative_list.append(tweet.text)
+            negative += 1
+            etat = "neg"
+        elif pos > neg:
+            positive_list.append(tweet.text)
+            positive += 1
+            etat = "pos"
+        elif pos == neg:
+            neutral_list.append(tweet.text)
+            neutral += 1
+            etat = "neu"
+        print(tweet)
+        tweetClean = str(unicodedata.normalize('NFKD', tweet.text).encode('ascii','ignore'))
+
+        writer.writerow([Dict['compteTwitter'].username,Dict['compteTwitter'].created_at, tweetClean, tweet.nb_rt, tweet.nb_like, tweet.nb_quote, tweet.nb_reply,tweet.created_at,etat,pos,neu,neg, comp,polarity])
+
+
+    positive = percentage(positive, noOfTweet)
+    negative = percentage(negative, noOfTweet)
+    neutral = percentage(neutral, noOfTweet)
+
+    polarity = percentage(polarity, noOfTweet)
+    positive = format(positive, '.1f')
+    negative = format(negative, '.1f')
+    neutral = format(neutral, '.1f')
+
+    #WORDCLOUDS + FREQUENCE MOTS
+    dict_MotsUniques = {}
+    liste_tweets=[]
+    liste_de_liste = [global_list, negative_list, positive_list, neutral_list]
+    name_liste = ['global','negative', 'positive', 'neutre']
+    nb_liste=0
+    for liste in liste_de_liste :
+        liste_tweets=[]
+        for tweet in liste :
+            liste_tweets.append(tweet)
+        tw_list = pd.DataFrame(liste_tweets)
+        tw_list["text"] = tw_list[0]
+        #Clean tweets : RT / username / lowercase
+        liste_tweetsClean = []
+        for tweet in tw_list["text"] :
+            tweet = re.sub(r'@[A-Z0-9a-z_:]+','',tweet)
+            tweet = re.sub(r'^[RT]+','',tweet)
+            tweet = re.sub('https?://[A-Za-z0-9./]+','',tweet)
+            tweet = tweet.lower()
+            liste_tweetsClean.append(tweet)
+        tw_listClean = pd.DataFrame(liste_tweetsClean)
+
+        #Creating wordcloud for all tweets
+        #mask = np.array(Image.open('cloud.png'))
+        stopwords = list(fr_stop)
+        wc = WordCloud(background_color='white',
+        # mask = mask,
+        max_words=3000,
+        stopwords=stopwords,
+        repeat=True)
+        wc.generate(str(tw_listClean[0].values))
+        wc.to_file('game/static/game/wordcloud/wc-'+name_liste[nb_liste]+'-'+Dict['compteTwitter'].username+'.png')
+        print('Word Cloud Saved Successfully => ', name_liste[nb_liste])
+     
+        #Frequence d'utilisation des mots
+        #Clean en cascade
+        #Removing Punctuation
+        tw_listClean['punct'] = tw_listClean[0].apply(lambda x: remove_punct(x))
+        #Appliyng tokenization
+        tw_listClean['tokenized'] = tw_listClean['punct'].apply(lambda x: tokenization(x.lower()))
+        #Remove stopwords
+        tw_listClean['nonstop'] = tw_listClean['tokenized'].apply(lambda x: remove_stopwords(x))
+        #Appliyng Stemmer
+        #tw_listClean['stemmed'] = tw_listClean['nonstop'].apply(lambda x: stemming(x))
+        dict_MotsUniques[name_liste[nb_liste]]={}
+        for tweet in tw_listClean['nonstop'] :
+            for word in tweet :
+                if word in dict_MotsUniques[name_liste[nb_liste]].keys() :
+                    dict_MotsUniques[name_liste[nb_liste]][word]=dict_MotsUniques[name_liste[nb_liste]][word]+1
+                else :
+                    dict_MotsUniques[name_liste[nb_liste]][word]=1
+
+
+
+        nb_liste=nb_liste+1
+
+    pdb.set_trace()
+    print('--- END Fonction MOULINETTE ---')
+
+    return render(request, 'game/nuage.html', locals())
+
+#FONCTIONS pour MOULINETTE
+#Removing Punctuation
+def remove_punct(text):
+ text = "".join([char for char in text if char not in string.punctuation])
+ text = re.sub('[0–9]+', '', text)
+ return text
+
+#Appliyng tokenization
+def tokenization(text):
+    text = re.split('\W+', text)
+    return text
+
+#Remove stopwords
+def remove_stopwords(text):
+    stopword = nltk.corpus.stopwords.words('french')
+    text = [word for word in text if word not in stopword]
+    return text
+
+#Appliyng Stemmer
+def stemming(text):
+    ps = nltk.PorterStemmer()
+    text = [ps.stem(word) for word in text]
+    return text
 
 
 ### --- USER ACCOUNT --- ###
@@ -200,27 +377,6 @@ def sentimental(request, compteTwitter_id):
     negative = format(negative, '.1f')
     neutral = format(neutral, '.1f')
         
-    '''
-
-    #NEW - Analyse sentimentale
-    #1 - Construction liste des Tweets
-    for tweet in Dict['compteTwitter'].tweet_set.all():
-        print(tweet)
-        tweet_list.append(tweet.text)
-    #2 - Clean liste des tweets
-    #2.1 - Suppression doublons
-    tweet_list.drop_duplicates(inplace = True)
-    #2.2 - Creation nouveau DataFrame
-    tw_list = pd.DataFrame(tweet_list)
-    tw_list['text'] = tw_list[0]
-    #2.3 - Clean RT, Punctuation etc
-    remove_rt = lambda x: re.sub('RT @\w+: '," ",x)
-    rt = lambda x: re.sub("(@[A-Za-z0–9]+)|([⁰-9A-Za-z \t])|(\w+:\/\/\S+)"," ",x)
-    tw_list["text"] = tw_list.text.map(remove_rt).map(rt)
-    tw_list["text"] = tw_list.text.str.lower()
-    tw_list.head(10)
-    pdb.set_trace()
-    '''
 
 
 
@@ -364,7 +520,8 @@ def geolocalisation(request, compteTwitter_id):
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     return render(request, 'game/geolocalisation.html', locals())
 
-### --- Nuage de mots (DashBoard - Nuage de points - WordCloud) --- ###
+### --- LEGACY -Nuage de mots (DashBoard - Nuage de points - WordCloud) --- ###
+
 def create_wordcloud(text):
     #mask = np.array(Image.open('cloud.png'))
     stopwords = list(fr_stop)
@@ -379,6 +536,7 @@ def create_wordcloud(text):
     path='game/static/game/wordcloud/wc.png'
     # display(Image.open(path))
 
+'''
 def nuage(request, compteTwitter_id):
     print('--- START Fonction WordCloud ---')
     Dict={}
@@ -406,7 +564,7 @@ def nuage(request, compteTwitter_id):
     print('--- END Fonction WordCloud ---')
 
     return render(request, 'game/nuage.html', locals())
-
+'''
 ### --- Reports (DashBoard - Reports) --- ###
 def reports(request, compteTwitter_id): 
     Dict={}
@@ -588,8 +746,8 @@ def analyse2(request, compteTwitter_id):
     ratioNbTweetsHashtagPourcentage = round (ratioNbTweetsHashtag*100, 2)
     print('END Tweets avec Hashtag')
 
-    
-    #Object RatioDaysWithTweet
+    '''
+    #LEGACY - Object RatioDaysWithTweet
     print('Debut Ratio Days With Tweets')
     RatioDaysWithTweet = 0
     nbDays = 0
@@ -611,12 +769,21 @@ def analyse2(request, compteTwitter_id):
             nbDaysWithTweet = nbDaysWithTweet +1 #Cas du premier tweet
             i=i+1
             continue
-    ratioDaysWithTweet = round((nbDaysWithTweet/nbDays)*100, 2)
+    #ratioDaysWithTweet = round((nbDaysWithTweet/nbDays)*100, 2)
     print('Fin Ratio Days With Tweets')
+    '''
 
-            
-
-
+    #NEW - Object RatioDaysWithTweet
+    #Nb de jours
+    nbDaysDelay2 = datetime.now() - Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at.replace(tzinfo=None)
+    nbDaysDelay = nbDaysDelay2.days
+    #Nb de jours avec tweets :
+    listeDate = []
+    for tweet in Dict['compteTwitter'].tweet_set.all():
+        dateTweet = str(tweet.created_at.day) + str(tweet.created_at.month) + str(tweet.created_at.year)
+        listeDate.append(dateTweet)
+    listeDateClean = list(set(listeDate))
+    ratioDaysWithTweet = round((len(listeDateClean) / nbDaysDelay)*100, 2)
 
     #WIDGET BEST TWEET (barres horizontales)
     print('Debut Widget Best Tweets')
@@ -638,6 +805,25 @@ def analyse2(request, compteTwitter_id):
 
 
 #WIDGETS EXPORT XL par Module
+def nuage_export_csv(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="export-datas.csv"'
+
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['Username','Tweet text', 'Nombre de retweet', 'Nombre de likes', 'Nombre de citations', 'Nombre de réponses','Date de création','Langue'])
+
+    tweetsToExport = Dict['compteTwitter'].tweet_set.all()
+    for tweet in tweetsToExport:
+        tweetClean = str(unicodedata.normalize('NFKD', tweet.text).encode('ascii','ignore'))
+        tweetClean2 = tweetClean.replace('\n','') #Ne marche pas
+        row=[Dict['compteTwitter'].username, tweetClean2,tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
+        writer.writerow(row)
+    return(response)
+
+
 def analyse2_export_csv(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
@@ -650,7 +836,9 @@ def analyse2_export_csv(request, compteTwitter_id):
 
     tweetsToExport = Dict['compteTwitter'].tweet_set.all()
     for tweet in tweetsToExport:
-        row=[Dict['compteTwitter'].username, tweet.text.encode('ascii','ignore'),tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
+        tweetClean = str(unicodedata.normalize('NFKD', tweet.text).encode('ascii','ignore'))
+        tweetClean2 = tweetClean.replace('\n','') #Ne marche pas
+        row=[Dict['compteTwitter'].username, tweetClean2,tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
         writer.writerow(row)
     return(response)
 
@@ -708,8 +896,8 @@ def sentimental_export_csv(request, compteTwitter_id):
             neutral += 1
             etat = "Neutre"
 
-
-        row=[Dict['compteTwitter'].username, tweet.text.encode('ascii','ignore'), etat, tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
+        tweetClean = str(unicodedata.normalize('NFKD', tweet.text).encode('ascii','ignore'))
+        row=[Dict['compteTwitter'].username, tweetClean, etat, tweet.nb_rt,tweet.nb_like,tweet.nb_quote,tweet.nb_reply,tweet.created_at,tweet.lang]
         writer.writerow(row)
 
     positive = percentage(positive, noOfTweet)
@@ -719,13 +907,9 @@ def sentimental_export_csv(request, compteTwitter_id):
     positive = format(positive, '.1f')
     negative = format(negative, '.1f')
     neutral = format(neutral, '.1f')
+
     return(response)
 
-
-#WIDGET PROJECTS (barres horizontales)
-    
-
-    return response
 ### --- ANALYSE --- ###
 def analyse(username):
     ##FONCTION AU CLICK
