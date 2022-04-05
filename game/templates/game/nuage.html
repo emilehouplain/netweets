@@ -4,17 +4,116 @@
 {% block content %}
 
 
-                <!-- Begin Page Content -->
-                <!-- TEST -->
+<!-- testGit-->
+ 
 
+
+
+                <!-- Begin Page Content -->
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Nuage de Tweets - {{ Dict.compteTwitter.username }}</h1>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Analyse sémentique - {{ Dict.compteTwitter.username }}</h1>
+                        <a href="{% url 'nuage_export_csv' Dict.compteTwitter.id_compteTwitter %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Exporter les données</a>
+                    </div>
                     <p class="mb-4">Représentation de la fréquence d'utilisation des mots dans les tweets analysés du compte {{Dict.compteTwitter.username}} </p>
 
-                
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Tweets analysés</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ noOfTweet }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comment fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                               Mots analysés</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ nbWordsTotal }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user-circle fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Mots uniques analysés
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ nbMotsUniques }}</div>
+                                                </div>
+                                                <div class="col">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-heart fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Que mettre ?</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Que mettre ?</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+					
+					
+					
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+
                         <!-- Widget Nuage de mots GLOBAL -->
+						<div class="col-lg-6 mb-4">
+
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 class="m-0 font-weight-bold text-primary">Nuage de mots</h6>
@@ -25,16 +124,21 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                         aria-labelledby="dropdownMenuLink">
-                                        <div class="dropdown-header">Paramètres :</div>
-                                        <a class="dropdown-item">Paramètre 1</a>
+                                        <div class="dropdown-header">Sentiment :</div>
+                                        <a id="WC_tout_sentiment" class="dropdown-item">Tout sentiment</a>
+                                        <a class="dropdown-item">Positif</a>
+                                        <a class="dropdown-item">Neutre</a>
+                                        <a class="dropdown-item">Negatif</a>
+
+
 
                                     </div>
                                 </div>
 
                             </div>
                             <div class="card-body">
-                                                                <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                        <div class="text-center">
+                                        <img id='imgWC' class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
                                             src="../../static/game/wordcloud/wc-global-{{Dict.compteTwitter.username}}.png" alt="...">
                                     </div>
 
@@ -43,26 +147,266 @@
                                 
                          
                         </div>
+						</div>
+						
+						    <!-- Widget ChartPie -->
+                        <div class="row">
+                            <!-- Content Column -->
+						<div class="col-lg-12 mb-4">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Sentimental repartition</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Mesure : </div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                    #4e73df
+                                    <div class="mt-4 text-center small">
+                                    <span class="mr-2">
+                                            <i class="fas fa-circle text-info"></i> Neutre
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-primary"></i> Positif
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> Negatif
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+
                     </div>
-                        <!-- End Widget Best Tweet -->
-            
+					
+					<!-- DataTales - Most Used Words - All sentiments -->
+					<div class="col-lg-6 mb-4">
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Mots les plus utilisés - Tout sentiment</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+
+
+
+
+
+                    <!-- Widget Tables -->
+
+                    <table id="myTable" class="display myTable">
+                        <thead>
+                            <tr>
+                                <th>Mot</th>
+                                <th>Nb utilisation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for key, value in dict_MotsUniques.global.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END Widget Most Used Words - GLOBAL -  Tables -->
+					
+					</div>
+                    </div>
+					
+					
+					<div class="row">
+					<!-- DataTales - Most Used Words - Sentiment positif -->
+					<div class="col-lg-6 mb-4">
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Mots les plus utilisés - Sentiment positif</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+                    <!-- Widget Tables -->
+
+                    <table id="myTable" class="display myTable">
+                        <thead>
+                            <tr>
+                                <th>Mot</th>
+                                <th>Nb utilisation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for key, value in dict_MotsUniques.positive.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+					</div>
+					<!-- END Widget Most Used Words  - POSITIF - Tables -->
+					
+					
+					<!-- DataTales - Most Used Words - Sentiment positif -->
+					<div class="col-lg-6 mb-4">
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Mots les plus utilisés - Sentiment negative</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+                    <!-- Widget Tables -->
+
+                    <table id="myTable" class="display myTable">
+                        <thead>
+                            <tr>
+                                <th>Mot</th>
+                                <th>Nb utilisation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for key, value in dict_MotsUniques.negative.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+					</div>
+					<!-- END Widget Most Used Words  - POSITIF - Tables -->
+					
+					
+					
+					                    <!-- DataTales - Most Used Words - Sentiment neutre -->
+					<div class="col-lg-6 mb-4">
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Mots les plus utilisés - Sentiment neutre</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+                    <!-- Widget Tables -->
+
+                    <table id="myTable" class="display myTable">
+                        <thead>
+                            <tr>
+                                <th>Mot</th>
+                                <th>Nb utilisation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for key, value in dict_MotsUniques.neutre.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+					</div>
+					<!-- END Widget Most Used Words  - NEUTRE - Tables -->
+
+
+
+
+                
+					
+					
+					
+					
+					</div>
+                   </div>
+					
+
             <!-- End of Main Content -->
 
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-
-
+  
 
 
 </body>
+
+<!-- Scripts / Libs nécessaires pour DataTables -->
+<script>
+    $(document).ready( function () {
+        $('.myTable').DataTable();
+    } );
+    </script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<!-- END Scripts / Libs nécessaires pour DataTables -->
+
+
+<!-- Script JS nécessaire pour dessiner le widget Chart Pie-->
+<script>
+    var data = JSON.parse("{{data|escapejs}}");
+</script>
+<script>
+    var labelsChartPie=JSON.parse("{{labelsChartPie|escapejs}}");
+</script>
+<script> chartPie() </script>
 
 {% endblock %}

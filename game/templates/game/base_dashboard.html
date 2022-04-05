@@ -129,11 +129,8 @@
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                        <a class="collapse-item" href="{% url 'geolocalisation' Dict.compteTwitter.id_compteTwitter %}">Geolocalisation</a>
-                        <a class="collapse-item" href="{% url 'reports' Dict.compteTwitter.id_compteTwitter %}">Reports</a>
+                        <h6 class="collapse-header">Modules :</h6>
+                        <a class="collapse-item" href="">A venir...</a>
                     </div>
                 </div>
             </li>
@@ -152,45 +149,15 @@
                         <a class="collapse-item" href="">Visualisation globale</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'tables' Dict.compteTwitter.id_compteTwitter %}">Tableau</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}">Nuage sémantique<span style="color: red;"><sup><strong>BETA</strong></sup></span></a>
-                        <a class="collapse-item" href="">Géolocalisation<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'geolocalisation' Dict.compteTwitter.id_compteTwitter %}">Géolocalisation<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'sentimental' Dict.compteTwitter.id_compteTwitter %}" target="_blank">Analyse sentimentale<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
-                        <a class="collapse-item" href="">Rapports<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'reports' Dict.compteTwitter.id_compteTwitter %}">Rapports<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                     </div>
                 </div>
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li>
-
-
-
-            
 
             <!-- Divider -->
             <hr class="sidebar-divider">

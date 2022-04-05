@@ -356,10 +356,13 @@ document.getElementById('ratioLikesPerTweetPerMonth')
 <script>
     var data = JSON.parse("{{data|escapejs}}");
 </script>
-
+<script>
+    var labelsChartPie=JSON.parse("{{labelsChartPie|escapejs}}");
+</script>
+<script> chartPie() </script>
 <!-- Script JS nécessaire pour l'embedded twitter-->
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
-
+<script> chartPie() </script>
 {% endblock %}

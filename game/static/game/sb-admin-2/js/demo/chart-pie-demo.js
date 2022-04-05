@@ -4,12 +4,14 @@ Chart.defaults.global.defaultFontColor = '#858796';
 
 // Pie Chart Example
 
-window.onload = function() {
+//window.onload 
+
+var chartPie = function() {
 var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ["Followers", "Friends"],
+    labels: labelsChartPie,
     datasets: [{
       data: data,
       backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
