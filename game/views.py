@@ -3,8 +3,6 @@
 #IMPORTS
 from audioop import reverse
 import json
-from tkinter import E
-from tkinter.ttk import Separator
 from django.http import JsonResponse
 from importlib_metadata import _top_level_declared
 from collections import OrderedDict
