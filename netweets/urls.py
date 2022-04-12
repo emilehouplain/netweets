@@ -41,7 +41,9 @@ urlpatterns = [
 	#path('moulinette/<int:compteTwitter_id>', views.moulinette, name='moulinette'),
 
 
-	path('', views.formulaire2, name="formulaire2")
+	path('', views.formulaire2, name="formulaire2"),
+    path('formulaire_test', views.formulaire_test, name="formulaire_test")
+
 
 
 

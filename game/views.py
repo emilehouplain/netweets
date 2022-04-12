@@ -1,6 +1,9 @@
 #--------- VIEWS NETWEETS GAME -----------------#
 
 #IMPORTS
+from rq import Queue
+from game.worker import conn
+
 from audioop import reverse
 import json
 from django.http import JsonResponse
@@ -63,6 +66,32 @@ from PIL import Image
 import re
 from nltk.corpus import stopwords
 from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
+
+## --- TEST QUEUE BACKGROUND TASKS --- # 
+def formulaire_test(request):
+    '''
+    Dict={}
+    lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
+    '''
+    
+    pdb.set_trace()
+    q = Queue(connection=conn)
+    # result = q.enqueue(scrap, 1976143068) #ID Macron
+    result = q.enqueue(nuage, 1976143068) #ID Macron -> l'analyse sentimental devrait etre shutdown en appel normal mais marcher avec la queue ?
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
 
 ### --- Moulinette --- ###
 def nuage(request, compteTwitter_id):
