@@ -458,6 +458,7 @@ def roadmap(request, compteTwitter_id):
     dateFirstTweet = format_datetime(dateFirstTweet, locale='fr')
     dateLastTweet = format_datetime(dateLastTweet, locale='fr')
 
+    pdb.set_trace()
 
 
     nbRetweetsTotal=0
@@ -762,19 +763,6 @@ def analyse2(request, compteTwitter_id):
     #WIDGET PROJECTS (=Statstiques -> barres horizontales)
     #Object Retweets Ratio
     print('Debut RT Ratio')
-
-    nbTweetsRt=0
-    nbTweetsWithoutRt=0
-    for tweet in Dict['compteTwitter'].tweet_set.all() :
-        if "RT" in tweet.text : 
-            nbTweetsRt=nbTweetsRt+1
-        else :
-            nbTweetsWithoutRt=nbTweetsWithoutRt+1
-    
-    ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
-    ratioTweetsRtPourcentage = round(ratioTweetsRt*100, 2)
-
-    #Object Retweets Ratio
     nbTweetsRt=0
     nbTweetsWithoutRt=0
     for tweet in Dict['compteTwitter'].tweet_set.all() :
