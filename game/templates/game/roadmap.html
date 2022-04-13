@@ -46,7 +46,7 @@
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Tweets moyen par jour</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">TEST</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ nbTweetPerDay }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-comment fa-2x text-gray-300"></i>
@@ -170,8 +170,8 @@
 						<!-- End Widget Best Tweet -->
 						
 						
-						<!-- ChartPie -->
-						<div class="col-xl-4 col-lg-5">
+						<!-- Widget ChartPie -->
+						<div class="col-xl-4 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -199,16 +199,60 @@
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Followers
+                                            <i class="fas fa-circle text-primary"></i> Retweets
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Friends
+                                            <i class="fas fa-circle text-success"></i> Sans retweets
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-						<!-- END ChartPie -->
+						<!-- END Widget ChartPie -->
+						
+						
+					<!--Widget DataTales - all tweets -->
+                    <div class="col-xl-12 col-lg-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Liste des Tweets de {{ Dict.compteTwitter.username }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+                    <!-- DATA tables en brut -->
+
+                    <table id="myTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Date de création</th>
+                                <th>Texte</th>
+                                <th>Nombre de like</th>
+                                <th>Nombre de retweet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in Dict.compteTwitter.tweet_set.all %}
+                            <tr>
+                                <td>{{ t.created_at }}</td>
+                                <td>{{ t.text }}</td>
+                                <td>{{ t.nb_like }}</td>
+                                <td>{{ t.nb_rt }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+					</div>
+					<!--END Widget DataTales - all tweets -->
+
+
 
 
                 <!-- /.container-fluid -->
@@ -271,6 +315,25 @@ document.getElementById('ratioLikesPerTweetPerMonth')
 
 <!-- Script JS nécessaire pour l'embedded twitter-->
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<!-- Script JS nécessaire pour dessiner le widget Chart Pie-->
+<script>
+    var data = JSON.parse("{{data|escapejs}}");
+</script>
+<script>
+    var labelsChartPie=JSON.parse("{{labelsChartPie|escapejs}}");
+</script>
+<script> chartPie() </script>
+
+<!-- Scripts / Libs nécessaires pour DataTables -->
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+    </script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<!-- END Scripts / Libs nécessaires pour DataTables -->
 
 
 

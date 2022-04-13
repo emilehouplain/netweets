@@ -74,24 +74,14 @@ def formulaire_test(request):
     lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
     '''
     
-    pdb.set_trace()
     q = Queue(connection=conn)
     # result = q.enqueue(scrap, 1976143068) #ID Macron
     result = q.enqueue(nuage, 1976143068) #ID Macron -> l'analyse sentimental devrait etre shutdown en appel normal mais marcher avec la queue ?
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
+    '''
+    Comment mettre en queue ?
+    1 - queue renderer (all fonction + render)
+    2 - queue uniquement la fonction mais on render normal ? 
+    '''
 
 ### --- Moulinette --- ###
 def nuage(request, compteTwitter_id):
@@ -263,7 +253,6 @@ def nuage(request, compteTwitter_id):
 
     print('--- END Fonction MOULINETTE ---')
     
-    pdb.set_trace()
     return render(request, 'game/nuage.html', locals())
 
 #FONCTIONS pour MOULINETTE
@@ -457,9 +446,7 @@ def roadmap(request, compteTwitter_id):
     dateLastTweet = Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at
     dateFirstTweet = format_datetime(dateFirstTweet, locale='fr')
     dateLastTweet = format_datetime(dateLastTweet, locale='fr')
-
-    pdb.set_trace()
-
+    
 
     nbRetweetsTotal=0
     nbTweetsTotal=0
@@ -468,6 +455,10 @@ def roadmap(request, compteTwitter_id):
         nbTweetsTotal=nbTweetsTotal+1
     nbRetweetsMoyenParTweet=nbRetweetsTotal/nbTweetsTotal
     nbRetweetsMoyenParTweet=round(nbRetweetsMoyenParTweet,2)
+
+    #Object Tweet moyen par jour
+    delai = Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at - Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at
+    nbTweetPerDay = round(len(Dict['compteTwitter'].tweet_set.all()) / delai.days, 2)
     print('END Widgets Encarts TOP')
 
 
@@ -477,14 +468,10 @@ def roadmap(request, compteTwitter_id):
     #Sous widget - Nombre Tweets / Mois -
     #Objet Label
     labels = buildLabels(Dict['compteTwitter'].tweet_set.order_by('created_at')[0].created_at, Dict['compteTwitter'].tweet_set.order_by('-created_at')[0].created_at )
-
-    
-    
     #Objet général DictionnaireDatas
     Dict['datas']={}
     for date in labels : 
         Dict['datas'][date[0],date[1]]=0
-
     #Objet nbTweetsPerMonth
     nbTweetsPerMonth=[]
     for tweet in Dict['compteTwitter'].tweet_set.all():
@@ -493,12 +480,10 @@ def roadmap(request, compteTwitter_id):
                 Dict['datas'][date[0],date[1]]= Dict['datas'][date[0],date[1]]+1
             else:
                 pass
-
     #Construction de nbTweetsPerMonth
     nbTweetsPerMonth=[]
     for key in Dict['datas'].keys() :
         nbTweetsPerMonth.append(Dict['datas'][key])
-    
     #Objet ratioLikesPerTweetPerMonth
     ratioLikesPerTweetPerMonth = []
     for date in labels : 
@@ -511,8 +496,6 @@ def roadmap(request, compteTwitter_id):
         else : 
             ratioLikesPerTweet = 0
         ratioLikesPerTweetPerMonth.append(ratioLikesPerTweet)
-
-    
     #Objet ratioRTPerTweetPerMonth
     ratioRTPerTweetPerMonth = []
     for date in labels : 
@@ -527,7 +510,32 @@ def roadmap(request, compteTwitter_id):
         ratioRTPerTweetPerMonth.append(ratioRTPerTweet)
 
 
-                
+
+    #WIDGET CHART PIE (chart-area-demo.js)
+    #Objet RatioTweetsRt
+    print('Debut RT Ratio')
+    nbTweetsRt=0
+    nbTweetsWithoutRt=0
+    for tweet in Dict['compteTwitter'].tweet_set.all() :
+        if "RT" in tweet.text : 
+            nbTweetsRt=nbTweetsRt+1
+        else :
+            nbTweetsWithoutRt=nbTweetsWithoutRt+1
+    ratioTweetsRt=nbTweetsRt/(nbTweetsRt+nbTweetsWithoutRt)
+    ratioTweetsRtPourcentage = round(ratioTweetsRt*100, 2)
+    ratioTweetsWithoutRtPourcentage = round(100 - ratioTweetsRtPourcentage, 2)
+
+
+    #Objet labels + datas (json dump)
+    labelsChartPie=['Retweets','Sans Retweets']
+    data=[ratioTweetsRtPourcentage, ratioTweetsWithoutRtPourcentage] #A remplacer par les valeurs calculées voulues (ex : repartition RT/Tweets)
+    data=json.dumps(data)
+    labelsChartPie=json.dumps(labelsChartPie)
+
+
+
+    print('END RT Ratio')
+
 
 
     #Verif recup totalité des tweets
@@ -573,7 +581,6 @@ def geolocalisation(request, compteTwitter_id):
     return render(request, 'game/geolocalisation.html', locals())
 
 ### --- LEGACY -Nuage de mots (DashBoard - Nuage de points - WordCloud) --- ###
-
 def create_wordcloud(text):
     #mask = np.array(Image.open('cloud.png'))
     stopwords = list(fr_stop)
@@ -586,37 +593,7 @@ def create_wordcloud(text):
     wc.to_file('game/static/game/wordcloud/wc.png')
     print('Word Cloud Saved Successfully')
     path='game/static/game/wordcloud/wc.png'
-    # display(Image.open(path))
 
-'''
-def nuage(request, compteTwitter_id):
-    print('--- START Fonction WordCloud ---')
-    Dict={}
-    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
-    liste_tweets = []
-    for tweet in Dict['compteTwitter'].tweet_set.all() :
-        liste_tweets.append(tweet.text)
-    tw_list = pd.DataFrame(liste_tweets)
-    tw_list["text"] = tw_list[0]
-    #Clean tweets : RT / username / lowercase
-    liste_tweetsClean = []
-    for tweet in tw_list["text"] :
-        tweet = re.sub(r'@[A-Z0-9a-z_:]+','',tweet)
-        tweet = re.sub(r'^[RT]+','',tweet)
-        tweet = re.sub('https?://[A-Za-z0-9./]+','',tweet)
-        tweet = tweet.lower()
-        liste_tweetsClean.append(tweet)
-    tw_listClean = pd.DataFrame(liste_tweetsClean)
-    tw_listClean["text"] = tw_listClean[0]
-    #Creating wordcloud for all tweets
-    listeCleanFinale = []
-    for text in tw_listClean["text"] :
-        listeCleanFinale.append(text)
-    create_wordcloud(listeCleanFinale)
-    print('--- END Fonction WordCloud ---')
-
-    return render(request, 'game/nuage.html', locals())
-'''
 ### --- Reports (DashBoard - Reports) --- ###
 def reports(request, compteTwitter_id): 
     Dict={}
