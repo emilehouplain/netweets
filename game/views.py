@@ -84,7 +84,7 @@ def formulaire_test(request):
     1 - queue renderer (all fonction + render)
     2 - queue uniquement la fonction mais on render normal ? 
     '''
-
+@background(schedule=0)
 ### --- Moulinette --- ###
 def nuage(request, compteTwitter_id):
     print('--- START Fonction MOULINETTE ---')
