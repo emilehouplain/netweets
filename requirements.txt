@@ -35,6 +35,8 @@ Deprecated==1.2.13
 distlib==0.3.1
 dj-database-url==0.5.0
 Django==3.2.9
+django-background-tasks==1.2.5
+django-compat==1.0.15
 django-heroku==0.3.1
 doc8==0.8.1
 docopt==0.6.2

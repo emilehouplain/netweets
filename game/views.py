@@ -1,6 +1,8 @@
 #--------- VIEWS NETWEETS GAME -----------------#
 
 #IMPORTS
+from background_task import background
+
 from rq import Queue
 from game.worker import conn
 
@@ -1148,6 +1150,8 @@ def game(request):
     return render(request, 'game/game.html', {'jeux': jeux})    
 
 
+
+@background(schedule=0)
 # Create your views here.
 def scrap(username):
     
