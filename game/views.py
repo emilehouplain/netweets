@@ -424,8 +424,8 @@ def sentimental(request, compteTwitter_id):
     return render(request, 'game/sentimental.html', locals())
 
 
-### --- Roadmap (DashBoard - Glossaire) --- ###
-def roadmap(request, compteTwitter_id):
+### --- Visualisation Globale (DashBoard - Analyse Tweets) --- ###
+def analyse_tweets(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
 
@@ -556,10 +556,14 @@ def roadmap(request, compteTwitter_id):
     labelsClean = json.dumps(labelsClean)
     print('END Widget Chart Area')
 
+    return render(request, 'game/analyse_tweets.html', locals())
 
-
-    return render(request, 'game/roadmap.html', locals())
-
+### --- Analyses (DashBoard - Exemples d'analyses) --- ###
+def presidentielle2022(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    listeTweets=[]
+    return render(request, 'game/presidentielle2022.html', locals())
 
 ### --- Glossaire (DashBoard - Glossaire) --- ###
 def glossaire(request, compteTwitter_id):
@@ -567,6 +571,14 @@ def glossaire(request, compteTwitter_id):
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     listeTweets=[]
     return render(request, 'game/glossaire.html', locals())
+
+### --- Paramètres du compte utilisateur (DashBoard - Glossaire) --- ###
+def parametres(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    listeTweets=[]
+    return render(request, 'game/parametres.html', locals())
+
 
 ### --- FAQ (DashBoard - FAQ) --- ###
 def faq(request, compteTwitter_id):
@@ -1073,8 +1085,16 @@ def update(username):
         
         print('UPDATE TERMINE')
          
-def maj(request):
-    return render(request, 'game/maj.html')
+def maj(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    return render(request, 'game/maj.html', locals())
+
+def roadmap(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    return render(request, 'game/roadmap.html', locals())
+
     
 def accueil(request):
     cs = compteTwitter.objects.all()

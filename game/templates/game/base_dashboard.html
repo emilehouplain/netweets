@@ -53,30 +53,6 @@
 
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="http://127.0.0.1:8000/">NETWEETS</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="http://127.0.0.1:8000/game">Le jeu <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:8000/maj">MAJ</a>
-
-	  		      <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:8000/register">S'inscrire</a>
-      </li>
-
-      
-
-    </ul>
-
-  </div>
-</nav>
 
 
 
@@ -139,14 +115,14 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fas fa-fw fa-chart-pie"></i>
                     <span>Tweets</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Modules :</h6>
-                        <a class="collapse-item" href="">Visualisation globale</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'analyse_tweets' Dict.compteTwitter.id_compteTwitter %}">Visualisation gloable</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'tables' Dict.compteTwitter.id_compteTwitter %}">Tableau</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}">Nuage sémantique<span style="color: red;"><sup><strong>BETA</strong></sup></span></a>
                         <a class="collapse-item" href="{% url 'geolocalisation' Dict.compteTwitter.id_compteTwitter %}">Géolocalisation<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
@@ -159,6 +135,17 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
+            <div class="sidebar-heading">
+                Compte utilisateur
+            </div>
+
+            <!-- Nav Item - Paramètres -->            
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'parametres' Dict.compteTwitter.id_compteTwitter %}">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Paramètres</span></a>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -170,42 +157,71 @@
             <!-- Nav Item - FAQ -->
             <li class="nav-item">
             <a class="nav-link" href="{% url 'faq' Dict.compteTwitter.id_compteTwitter %}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-question"></i>
             <span>FAQ</span></a>
             </li>
 
             <!-- Nav Item - Glossaire -->
             <li class="nav-item">
             <a class="nav-link" href="{% url 'glossaire' Dict.compteTwitter.id_compteTwitter %}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-asterisk"></i>
             <span>Glossaire</span></a>
             </li>
 
-            <!-- Nav Item - Paramètres -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'glossaire' Dict.compteTwitter.id_compteTwitter %}">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Paramètres</span></a>
-                </li>
             
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
+            
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Informations
+            </div>
 
             <!-- Nav Item - Road Map -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'roadmap' Dict.compteTwitter.id_compteTwitter %}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-fw fa-calendar"></i>
                 <span>Road Map</span></a>
                 </li>
+			
+			<!-- Nav Item - Road Map -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'maj' Dict.compteTwitter.id_compteTwitter %}">
+                <i class="fas fa-fw fa-arrow-up"></i>
+                <span>Mises à jour</span></a>
+                </li>
+            
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
+                    aria-expanded="true" aria-controls="collapseThree">
+                    <i class="fas fa-fw fa-align-justify"></i>
+                    <span>Exemples d'analyses</span>
+                </a>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Analyses :</h6>
+                        <a class="collapse-item" href="{% url 'presidentielle2022' Dict.compteTwitter.id_compteTwitter %}">Présidentielle 2022</a>
+                        <a class="collapse-item" href="">A venir...</a>
 
+                    </div>
+                </div>
+            </li>
+
+
+				
+				
             <!-- Sidebar Toggler (Sidebar) NE MARCHE PAS
                 Sript JS à activer manuellement sur base_db.html ?
                 de la même façon que pour chart pie sur db.html
-            -->
+           
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+			 -->
+
+
             
 
             
