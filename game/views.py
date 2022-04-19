@@ -1,7 +1,6 @@
 #--------- VIEWS NETWEETS GAME -----------------#
 
 #IMPORTS
-from background_task import background
 
 from rq import Queue
 from game.worker import conn
@@ -84,7 +83,7 @@ def formulaire_test(request):
     1 - queue renderer (all fonction + render)
     2 - queue uniquement la fonction mais on render normal ? 
     '''
-@background(schedule=0)
+
 ### --- Moulinette --- ###
 def nuage(request, compteTwitter_id):
     print('--- START Fonction MOULINETTE ---')
@@ -1171,7 +1170,6 @@ def game(request):
 
 
 
-@background(schedule=0)
 # Create your views here.
 def scrap(username):
     

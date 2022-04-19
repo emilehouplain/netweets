@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'game',
-    'background_task.models.Task'
+    'game'
+    #'background_task.models.Task'
+
 ]
 
 MIDDLEWARE = [
