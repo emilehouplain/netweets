@@ -124,9 +124,9 @@
                         <h6 class="collapse-header">Modules :</h6>
                         <a class="collapse-item" href="{% url 'analyse_tweets' Dict.compteTwitter.id_compteTwitter %}">Visualisation gloable</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'tables' Dict.compteTwitter.id_compteTwitter %}">Tableau</a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
-                        <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}">Nuage sémantique<span style="color: red;"><sup><strong>BETA</strong></sup></span></a>
+                        <a class="collapse-item" href="{% url 'analyse_semantique' Dict.compteTwitter.id_compteTwitter %}">Analyse sémantique<span style="color: red;"><sup><strong>BETA</strong></sup></span></a>
                         <a class="collapse-item" href="{% url 'geolocalisation' Dict.compteTwitter.id_compteTwitter %}">Géolocalisation<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
-                        <a class="collapse-item" href="{% url 'sentimental' Dict.compteTwitter.id_compteTwitter %}" target="_blank">Analyse sentimentale<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+                        <a class="collapse-item" href="{% url 'nuage' Dict.compteTwitter.id_compteTwitter %}" target="_blank">Analyse sentimentale<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                         <a class="collapse-item" href="{% url 'reports' Dict.compteTwitter.id_compteTwitter %}">Rapports<span style="color: red;"><sup><strong>BETA</strong></sup></span></a> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
                     </div>
                 </div>

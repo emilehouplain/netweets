@@ -1,0 +1,111 @@
+{% extends 'game/base_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+
+
+                <!-- Begin Page Content -->
+                <!-- TEST -->
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Analyse sémantique</h1>
+                    <p class="mb-4">Analyse du vocabulaire utilisé</p>
+
+
+                    
+
+
+                    <div class="row">
+
+
+
+                    <!-- DataTales -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Popularité des mots de {{ Dict.compteTwitter.username }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+
+
+
+
+
+                    <!-- DATA tables en brut -->
+
+                    <table id="myTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Mot</th>
+                                <th>Nombre d'utilisation</th>
+                                <th>Score de retweets</th>
+                                <th>Score de likes </th>
+                                <th>Score de réponses</th>
+                                <th>Score de citations</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key,value in dictPopulariteMotsUniques.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value.nombre }}</td>
+
+                                <td>{{ value.score_retweets }}</td>
+                                <td>{{ value.score_likes }}</td>
+                                <td>{{ value.score_reply }}</td>
+                                <td>{{ value.score_quote }}</td>
+
+
+
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+					<!-- END DataTales -->
+                    
+                        
+
+
+						
+						
+
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+
+</body>
+
+
+<!-- Scripts / Libs nécessaires pour DataTables -->
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+    </script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<!-- END Scripts / Libs nécessaires pour DataTables -->
+
+
+
+
+
+
+{% endblock %}

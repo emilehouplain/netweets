@@ -83,7 +83,62 @@ def formulaire_test(request):
     1 - queue renderer (all fonction + render)
     2 - queue uniquement la fonction mais on render normal ? 
     '''
+### --- Fonctions analyse semantique --- ###
+#POC fonction construction Dictionnaire des mots uniques avec leurs taux de popularité
+#Input : ID compte twitter -> recup des tweets ->  analyse des tweets --> dictionnaire (output)
 
+def populariteMotsUniques(compteTwitter_id) :
+    print('--- Début fonction populariteMotsUniques ---')
+    Datas={}
+    Dict={}
+    stopwords = list(fr_stop)
+    Datas['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    liste_tweets = Datas['compteTwitter'].tweet_set.all()
+	
+    for t in liste_tweets : 
+        tweet = re.sub(r'@[A-Z0-9a-z_:]+','',t.text)
+        tweet = re.sub(r'^[RT]+','',tweet)
+        tweet = re.sub('https?://[A-Za-z0-9./]+','',tweet)
+        tweet = tweet.lower()
+        tweet = "".join([char for char in tweet if char not in string.punctuation])
+        tweet = re.sub('[0–9]+', '', tweet)
+
+
+        for word in tweet.split(' ') : 
+            if word in stopwords : 
+                pass
+            else :
+                if word not in Dict.keys() :
+                    Dict[word]={}
+                    Dict[word]['nombre'] = 1
+                    Dict[word]['retweets'] =  t.nb_rt
+                    Dict[word]['likes'] = t.nb_like	
+                    Dict[word]['reply'] = t.nb_reply
+                    Dict[word]['quote'] = t.nb_quote
+                elif word in Dict.keys() :
+                    Dict[word]['nombre'] += 1 
+                    Dict[word]['retweets'] += t.nb_rt
+                    Dict[word]['likes'] += t.nb_like	
+                    Dict[word]['reply'] += t.nb_reply
+                    Dict[word]['quote'] += t.nb_quote
+                else : 
+                    continue
+                
+                Dict[word]['score_retweets'] = Dict[word]['retweets'] / Dict[word]['nombre']
+                Dict[word]['score_likes'] = round(Dict[word]['likes'] / Dict[word]['nombre'], 2)
+                Dict[word]['score_reply'] = round(Dict[word]['reply'] / Dict[word]['nombre'], 2)
+                Dict[word]['score_quote'] = round(Dict[word]['quote'] / Dict[word]['nombre'], 2)
+        
+
+        
+    print('--- Fin fonction populariteMotsUniques ---')
+
+    return(Dict)
+
+	
+			
+
+			
 ### --- Moulinette --- ###
 def nuage(request, compteTwitter_id):
     print('--- START Fonction MOULINETTE ---')
@@ -560,6 +615,15 @@ def analyse_tweets(request, compteTwitter_id):
     return render(request, 'game/analyse_tweets.html', locals())
 
 ### --- Analyses (DashBoard - Exemples d'analyses) --- ###
+
+### --- Analyse semantique (DashBoard - Analyse semantique) --- ###
+def analyse_semantique(request, compteTwitter_id):
+    Dict={}
+    Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    dictPopulariteMotsUniques = populariteMotsUniques(compteTwitter_id)
+    return render(request, 'game/analyse_semantique.html', locals())
+
+
 def presidentielle2022(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)

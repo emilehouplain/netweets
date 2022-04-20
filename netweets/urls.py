@@ -38,6 +38,7 @@ urlpatterns = [
 	path('sentimental/<int:compteTwitter_id>', views.sentimental, name="sentimental"),
 	path('export/csv2/<int:compteTwitter_id>', views.sentimental_export_csv, name='sentimental_export_csv'),
     path('export/csv3/<int:compteTwitter_id>', views.nuage_export_csv, name='nuage_export_csv'),
+    path('analyse_semantique/<int:compteTwitter_id>', views.analyse_semantique, name='analyse_semantique'),
 
     #Aide
     path('faq/<int:compteTwitter_id>', views.faq, name="faq"),
