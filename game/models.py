@@ -46,6 +46,11 @@ class tweet(models.Model):
     
     lang = models.CharField(max_length=3000,null=True)
     
+    type = models.CharField(max_length=1000,null=True)
+
+    #geolocalisation = models.CharField(max_length=3000,null=True)
+
+    
     compteTwitter = models.ForeignKey(compteTwitter, null=True, on_delete=models.CASCADE)#CASCADE = si supression du Comtep Twitter : supression de tous les Tweets associés
     
     class Meta:

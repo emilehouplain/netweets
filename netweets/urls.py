@@ -22,7 +22,10 @@ urlpatterns = [
     #Hors DB
     path('formulaire', views.formulaire, name="formulaire"),
     path('', views.formulaire2, name="formulaire2"),
-    path('formulaire_test', views.formulaire_test, name="formulaire_test"),
+
+    #test
+    path('test', views.test, name="test"),
+
 
 
     #Analyse Compte Twitter

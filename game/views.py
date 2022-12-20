@@ -69,23 +69,12 @@ from nltk.corpus import stopwords
 from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
 
 ## --- TEST QUEUE BACKGROUND TASKS --- # 
-def formulaire_test(request):
-    '''
-    Dict={}
-    lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
-    '''
-    
-    q = Queue(connection=conn)
-    # result = q.enqueue(scrap, 1976143068) #ID Macron
-    result = q.enqueue(nuage, 1976143068) #ID Macron -> l'analyse sentimental devrait etre shutdown en appel normal mais marcher avec la queue ?
-    '''
-    Comment mettre en queue ?
-    1 - queue renderer (all fonction + render)
-    2 - queue uniquement la fonction mais on render normal ? 
-    '''
-### --- Fonctions analyse semantique --- ###
-#POC fonction construction Dictionnaire des mots uniques avec leurs taux de popularité
-#Input : ID compte twitter -> recup des tweets ->  analyse des tweets --> dictionnaire (output)
+def test(request):
+    objets = compteTwitter.objects.all()
+    objets.delete()
+    return render(request, 'game/test.html')
+
+
 
 def populariteMotsUniques(compteTwitter_id) :
     print('--- Début fonction populariteMotsUniques ---')
@@ -355,7 +344,10 @@ def register(request):
 def formulaire2(request):
     
     Dict={}
-    lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
+    try : 
+        lastCompteTwitterScraped = compteTwitter.objects.all().order_by('-last_scrap')[0]
+    except : 
+        pass
     
     form = FormulaireForm(request.POST or None)
     
@@ -621,6 +613,7 @@ def analyse_semantique(request, compteTwitter_id):
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
     dictPopulariteMotsUniques = populariteMotsUniques(compteTwitter_id)
+    pdb.set_trace()
     return render(request, 'game/analyse_semantique.html', locals())
 
 
@@ -681,6 +674,7 @@ def reports(request, compteTwitter_id):
 def tables(request, compteTwitter_id): #On demande l'ID du compteTwitter pour appelé le DB avec les datas correspondantes
     Dict={}
     Dict['compteTwitter'] = compteTwitter.objects.get(id_compteTwitter=compteTwitter_id)
+    
     return render(request, 'game/tables.html', locals())
 
 ###--- Fonction construction labels ---###
@@ -1237,7 +1231,7 @@ def game(request):
 # Create your views here.
 def scrap(username):
     
-    print('# ------- Fonction SCRAP 0.1.. ------- #')
+    print('# ------- Fonction SCRAP 0.2.. ------- #')
     #Variables globales :
     bolScrap=True
     #Date du jour
@@ -1305,22 +1299,67 @@ def scrap(username):
         # ENREGISTREMENT TWEETS # -> à vérfiier, prend ne compte les replies mais doit exclure d'autres tweets 
         # A VERIFIER PAR RAPPORT A NINOCLEVA
         #Enregistrement de la première liste de tweets
-        liste_tweets = api.get_users_tweets(user_information.data.id,max_results=100,tweet_fields=['author_id','created_at','public_metrics','lang'])#Liste des tweets
+        liste_tweets = api.get_users_tweets(user_information.data.id,max_results=100,tweet_fields=['author_id','created_at','public_metrics','lang'],expansions=['referenced_tweets.id'])#Liste des tweets
+
+        #Check if RT + get full text 
+        i=0
         for t in liste_tweets.data :
+            ''''
+            if 'RT @' in t.text : 
+                pdb.set_trace()
+            else : 
+                pass
+            '''
             #cas des RT à prévoir : reply/like/quote sur le retweet (=tweet du compte étudié), le nb_RT concerne le tweet initial
             id_tweet = t.id
             nb_rt=t.public_metrics['retweet_count'] #nb_retweet
             nb_reply=t.public_metrics['reply_count'] #nb_reply
             nb_like=t.public_metrics['like_count'] #nb_like
             nb_quote=t.public_metrics['quote_count'] #nb_quote
-            text=t.text #text
+            try : 
+                if 'RT @' in t.text : #cas du retweeted
+                    print('CAS RETWEET')
+                    typeTweet='retweet'
+                    textOriginal = api.get_tweet(int(liste_tweets.data[i]['referenced_tweets'][0]['id']))#Liste des tweets
+                    text=textOriginal[0]['text']
+                    print(text)
+                
+                elif liste_tweets.data[i]['referenced_tweets'][0]['type'] == 'retweeted': 
+                    print('CAS RETWEET')
+                    typeTweet='retweet'
+                    textOriginal = api.get_tweet(int(liste_tweets.data[i]['referenced_tweets'][0]['id']))#Liste des tweets
+                    text=textOriginal[0]['text']
+                    print(text)
+
+                elif liste_tweets.data[i]['referenced_tweets'][0]['type'] == 'replied_to': #Cas du replied_to
+                    print('CAS REPLY')
+                    typeTweet='reply'
+                    text=t.text
+                    print(text)
+                
+                elif liste_tweets.data[i]['referenced_tweets'][0]['type'] == 'quoted': #Cas du quoted
+                    print('CAS QUOTE')
+                    typeTweet='quote'
+                    text=t.text
+                    print(text)
+
+                else : 
+                    pass
+            except : 
+                #Tweet normal
+                text=t.text
+
+            
+            #text = t.text
+            
             created_at=t.created_at #date de création du tweet
             lang=t.lang #langue du tweet
             
             #Creation objet + enregistrement (tweet)
             t2 = tweet(id_tweet=id_tweet, text=text, nb_rt=nb_rt, nb_reply=nb_reply, nb_like=nb_like, nb_quote=nb_quote, 
-            created_at=created_at,lang=lang, compteTwitter=c)
+            created_at=created_at,lang=lang, compteTwitter=c, type=typeTweet)
             t2.save()
+            i=i+1
         
         #Enregistrement des autres listes
         while liste_tweets.meta['result_count'] > 0 :
@@ -1343,7 +1382,6 @@ def scrap(username):
                     t2.save()
             except :
                 pass
-        
         print('Enregistrement terminé.')
             
 #######################

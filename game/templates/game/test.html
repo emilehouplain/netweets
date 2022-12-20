@@ -1,0 +1,34 @@
+{% extends 'game/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+<!-- Test import CSS card uniquement hors template sb admin 2 : TEST VALIDE-->
+<!-- <link rel="stylesheet" href="{% static 'game/styles.css' %}" /> -->
+</head>
+
+<body>
+<!-- Formulaire -->
+<div style="text-align: center">
+    <p>TESTTEST</p>
+    <form action="{% url "formulaire" %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="formulaire"/>
+    </form>
+
+{% if envoi %}
+<p>{{ Dict.message }}</p>
+<p>Lien du DashBoard : </p>
+<a href="{% url 'analyse2' Dict.compteTwitter.id_compteTwitter %}"> <!-- URL dynamique pour passer l'id en paramètre entre deux pages -->
+    <span>DashBoard</span></a>
+
+
+
+
+
+
+</body>
+{% endif %}
+{% endblock %}
